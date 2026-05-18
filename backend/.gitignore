@@ -1,0 +1,39 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+momentum
+migrate
+
+# Test binary, built with `go test -c`
+*.test
+
+# Coverage
+*.out
+coverage.html
+
+# Dependency directories
+# vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Environment variables
+.env
+*.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# Build output
+/dist/
+/build/
+
+# Air (live reload tool)
+tmp/
