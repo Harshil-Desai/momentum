@@ -9,7 +9,7 @@ RUN go mod download
 COPY . .
 
 # Build the main server binary
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o momentum .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o cadence .
 
 # Build the migrate CLI binary
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o migrate ./cmd/migrate/
@@ -21,11 +21,11 @@ RUN apk --no-cache add ca-certificates tzdata
 
 WORKDIR /app
 
-COPY --from=builder /app/momentum .
+COPY --from=builder /app/cadence .
 COPY --from=builder /app/migrate .
 COPY --from=builder /app/migrations ./migrations/
 COPY docker-entrypoint.sh .
-RUN chmod +x momentum migrate docker-entrypoint.sh
+RUN chmod +x cadence migrate docker-entrypoint.sh
 
 EXPOSE 8080
 

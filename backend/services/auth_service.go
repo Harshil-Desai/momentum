@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"momentum/models"
-	"momentum/repositories"
+	"cadence/models"
+	"cadence/repositories"
 
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -55,7 +55,7 @@ func (s *AuthService) Login(email, password string) (string, *models.UserRespons
 	return token, user.ToResponse(), nil
 }
 
-func (s *AuthService) Register(email, password string) (string, *models.UserResponse, error) {
+func (s *AuthService) Register(email, password string, name *string) (string, *models.UserResponse, error) {
 	if len(password) < 8 {
 		return "", nil, ErrWeakPassword
 	}
@@ -76,6 +76,7 @@ func (s *AuthService) Register(email, password string) (string, *models.UserResp
 	user := &models.User{
 		Email:        email,
 		PasswordHash: string(hash),
+		Name:         name,
 	}
 	if err := s.userRepo.Create(user); err != nil {
 		return "", nil, fmt.Errorf("creating user: %w", err)

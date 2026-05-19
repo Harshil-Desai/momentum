@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// ── Momentum color tokens ────────────────────────────────────────────────────
+// ── Cadence color tokens ─────────────────────────────────────────────────────
 //
 //  Light (Frozen Water canvas):
 //    bgCanvas     #DCECEB   Frozen Water, desaturated
@@ -28,8 +28,8 @@ import 'package:google_fonts/google_fonts.dart';
 //    pine    #2A7B6E   iris    #553C8E   plum    #7A3370
 
 @immutable
-class MomentumColors extends ThemeExtension<MomentumColors> {
-  const MomentumColors({
+class CadenceColors extends ThemeExtension<CadenceColors> {
+  const CadenceColors({
     required this.bgCanvas,
     required this.surface,
     required this.inkPrimary,
@@ -53,7 +53,7 @@ class MomentumColors extends ThemeExtension<MomentumColors> {
   final Color archiveReveal; // Deep Twilight #0F084B
   final Color danger;       // dusk-rose for destructive actions
 
-  static const light = MomentumColors(
+  static const light = CadenceColors(
     bgCanvas:       Color(0xFFDCECEB),
     surface:        Color(0xFFFFFFFF),
     inkPrimary:     Color(0xFF0D0221),
@@ -66,7 +66,7 @@ class MomentumColors extends ThemeExtension<MomentumColors> {
     danger:         Color(0xFFA6446D),
   );
 
-  static const dark = MomentumColors(
+  static const dark = CadenceColors(
     bgCanvas:       Color(0xFF0D0221),
     surface:        Color(0xFF170A3C),
     inkPrimary:     Color(0xFFC2E7D9),
@@ -80,7 +80,7 @@ class MomentumColors extends ThemeExtension<MomentumColors> {
   );
 
   @override
-  MomentumColors copyWith({
+  CadenceColors copyWith({
     Color? bgCanvas,
     Color? surface,
     Color? inkPrimary,
@@ -92,7 +92,7 @@ class MomentumColors extends ThemeExtension<MomentumColors> {
     Color? archiveReveal,
     Color? danger,
   }) {
-    return MomentumColors(
+    return CadenceColors(
       bgCanvas:       bgCanvas       ?? this.bgCanvas,
       surface:        surface        ?? this.surface,
       inkPrimary:     inkPrimary     ?? this.inkPrimary,
@@ -107,9 +107,9 @@ class MomentumColors extends ThemeExtension<MomentumColors> {
   }
 
   @override
-  MomentumColors lerp(MomentumColors? other, double t) {
+  CadenceColors lerp(CadenceColors? other, double t) {
     if (other == null) return this;
-    return MomentumColors(
+    return CadenceColors(
       bgCanvas:       Color.lerp(bgCanvas,       other.bgCanvas,       t)!,
       surface:        Color.lerp(surface,        other.surface,        t)!,
       inkPrimary:     Color.lerp(inkPrimary,     other.inkPrimary,     t)!,
@@ -126,8 +126,8 @@ class MomentumColors extends ThemeExtension<MomentumColors> {
 
 // ── Six habit pigments ───────────────────────────────────────────────────────
 
-class MomentumPigments {
-  MomentumPigments._();
+class CadencePigments {
+  CadencePigments._();
 
   static const french = Color(0xFF26408B);
   static const cobalt = Color(0xFF1F5C9E);
@@ -211,10 +211,10 @@ class AppTheme {
   }
 
   static ThemeData light() {
-    const c = MomentumColors.light;
+    const c = CadenceColors.light;
     return ThemeData(
       colorScheme: ColorScheme.fromSeed(
-        seedColor: MomentumPigments.french,
+        seedColor: CadencePigments.french,
         brightness: Brightness.light,
         surface: c.surface,
       ),
@@ -250,10 +250,10 @@ class AppTheme {
   }
 
   static ThemeData dark() {
-    const c = MomentumColors.dark;
+    const c = CadenceColors.dark;
     return ThemeData(
       colorScheme: ColorScheme.fromSeed(
-        seedColor: MomentumPigments.french,
+        seedColor: CadencePigments.french,
         brightness: Brightness.dark,
         surface: c.surface,
       ),
@@ -291,7 +291,7 @@ class AppTheme {
 
 // ── Convenience extension ────────────────────────────────────────────────────
 
-extension MomentumTheme on BuildContext {
-  MomentumColors get mc =>
-      Theme.of(this).extension<MomentumColors>() ?? MomentumColors.light;
+extension CadenceTheme on BuildContext {
+  CadenceColors get mc =>
+      Theme.of(this).extension<CadenceColors>() ?? CadenceColors.light;
 }

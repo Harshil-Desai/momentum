@@ -192,7 +192,7 @@ class _WeeklyReflectionScreenState
                               width: double.infinity,
                               padding: const EdgeInsets.all(18),
                               decoration: BoxDecoration(
-                                color: MomentumPigments.pine.withAlpha(18),
+                                color: CadencePigments.pine.withAlpha(18),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Column(

@@ -2,9 +2,9 @@ package main
 
 import (
 	"log"
-	"momentum/config"
-	"momentum/db"
-	"momentum/routes"
+	"cadence/config"
+	"cadence/db"
+	"cadence/routes"
 	"time"
 
 	"github.com/gin-gonic/gin"

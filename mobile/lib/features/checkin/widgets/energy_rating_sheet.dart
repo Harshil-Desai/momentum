@@ -20,7 +20,7 @@ class _EnergyRatingSheetState extends ConsumerState<EnergyRatingSheet> {
   @override
   Widget build(BuildContext context) {
     final mc = context.mc;
-    final iris = MomentumPigments.iris;
+    final iris = CadencePigments.iris;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(

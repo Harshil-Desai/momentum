@@ -5,6 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/template.dart';
 import '../providers/templates_provider.dart';
 import '../../habits/providers/habits_provider.dart';
+import '../../auth/providers/auth_provider.dart';
+import '../../../core/api_client.dart';
+import '../../../core/offline/sync_service.dart';
 import '../../../core/theme/app_theme.dart';
 
 class TemplatesScreen extends ConsumerWidget {
@@ -136,7 +139,7 @@ class TemplatesScreen extends ConsumerWidget {
 class _CategorySection extends StatelessWidget {
   final String category;
   final List<HabitTemplate> templates;
-  final MomentumColors mc;
+  final CadenceColors mc;
 
   const _CategorySection({
     required this.category,
@@ -172,7 +175,7 @@ class _CategorySection extends StatelessWidget {
 
 class _TemplateRow extends ConsumerStatefulWidget {
   final HabitTemplate template;
-  final MomentumColors mc;
+  final CadenceColors mc;
 
   const _TemplateRow({required this.template, required this.mc});
 
@@ -183,7 +186,7 @@ class _TemplateRow extends ConsumerStatefulWidget {
 class _TemplateRowState extends ConsumerState<_TemplateRow> {
   bool _loading = false;
 
-  Color get _accent => MomentumPigments.fromHex(widget.template.color);
+  Color get _accent => CadencePigments.fromHex(widget.template.color);
 
   Future<void> _adopt() async {
     setState(() => _loading = true);
@@ -194,7 +197,11 @@ class _TemplateRowState extends ConsumerState<_TemplateRow> {
     setState(() => _loading = false);
 
     if (ok) {
+      // Pull the newly adopted habit from server into local DB, then refresh UI.
+      final userId = ref.read(authProvider).valueOrNull?.userId ?? '';
+      await SyncService(ref.read(dioProvider)).fullRefresh(userId);
       ref.invalidate(habitsProvider);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('"${widget.template.name}" added to your habits'),

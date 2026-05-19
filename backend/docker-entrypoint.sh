@@ -5,4 +5,4 @@ echo "Running database migrations..."
 ./migrate up
 
 echo "Migrations complete. Starting server..."
-exec ./momentum
+exec ./cadence

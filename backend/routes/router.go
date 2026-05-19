@@ -1,12 +1,12 @@
 package routes
 
 import (
-	"momentum/config"
-	"momentum/controllers"
-	"momentum/db"
-	"momentum/middleware"
-	"momentum/repositories"
-	"momentum/services"
+	"cadence/config"
+	"cadence/controllers"
+	"cadence/db"
+	"cadence/middleware"
+	"cadence/repositories"
+	"cadence/services"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,7 +32,7 @@ func SetupRouter(cfg *config.Config) *gin.Engine {
 		}
 		c.JSON(200, gin.H{
 			"status":   "OK",
-			"message":  "Momentum API is running",
+			"message":  "Cadence API is running",
 			"database": dbStatus,
 			"db_stats": dbStats,
 		})

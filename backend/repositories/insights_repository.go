@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"momentum/db"
+	"cadence/db"
 )
 
 type DayCount struct {
@@ -208,10 +208,10 @@ func (r *InsightsRepository) GetHabitCorrelations(userID string, lookbackDays in
 		JOIN (
 		  SELECT habit_id, COUNT(*) AS total
 		  FROM checkins
-		  WHERE user_id = $1 AND date >= CURRENT_DATE - $2
+		  WHERE user_id = $1 AND date >= CURRENT_DATE - $2::int
 		  GROUP BY habit_id
 		) base ON base.habit_id = a.habit_id
-		WHERE a.user_id = $1 AND a.date >= CURRENT_DATE - $2
+		WHERE a.user_id = $1 AND a.date >= CURRENT_DATE - $2::int
 		GROUP BY a.habit_id, ha.name, b.habit_id, hb.name, base.total
 		HAVING ROUND(COUNT(*)::numeric / NULLIF(base.total, 0) * 100, 1) >= 20
 		ORDER BY percentage DESC
@@ -242,7 +242,7 @@ func (r *InsightsRepository) GetDayOfWeekRates(userID string, windowWeeks int) (
 	rows, err := db.Pool.Query(ctx, `
 		WITH dates AS (
 		  SELECT generate_series(
-		    CURRENT_DATE - ($2 * 7),
+		    CURRENT_DATE - ($2::int * 7),
 		    CURRENT_DATE,
 		    '1 day'::interval
 		  )::date AS d

@@ -15,17 +15,17 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz_data.initializeTimeZones();
   await NotificationService().init();
-  runApp(const ProviderScope(child: MomentumApp()));
+  runApp(const ProviderScope(child: CadenceApp()));
 }
 
-class MomentumApp extends ConsumerStatefulWidget {
-  const MomentumApp({super.key});
+class CadenceApp extends ConsumerStatefulWidget {
+  const CadenceApp({super.key});
 
   @override
-  ConsumerState<MomentumApp> createState() => _MomentumAppState();
+  ConsumerState<CadenceApp> createState() => _CadenceAppState();
 }
 
-class _MomentumAppState extends ConsumerState<MomentumApp>
+class _CadenceAppState extends ConsumerState<CadenceApp>
     with WidgetsBindingObserver {
   @override
   void initState() {
@@ -72,7 +72,7 @@ class _MomentumAppState extends ConsumerState<MomentumApp>
     final router = ref.watch(routerProvider);
     final themeMode = ref.watch(themeNotifierProvider);
     return MaterialApp.router(
-      title: 'Momentum',
+      title: 'Cadence',
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: themeMode,

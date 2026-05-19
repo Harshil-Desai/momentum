@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/habit.dart';
 import '../providers/habits_provider.dart';
 import '../providers/reminder_provider.dart';
+import '../widgets/icon_picker.dart';
 import '../../../core/theme/app_theme.dart';
 
 class HabitDetailScreen extends ConsumerWidget {
@@ -14,7 +15,7 @@ class HabitDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mc = context.mc;
-    final accent = MomentumPigments.fromHex(habit.color);
+    final accent = CadencePigments.fromHex(habit.color);
     final streakAsync = ref.watch(habitStreakProvider(habit.id));
     final historyAsync = ref.watch(habitHistoryDataProvider(habit.id));
 
@@ -75,9 +76,10 @@ class HabitDetailScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Center(
-                      child: Text(
-                        habit.icon ?? '📌',
-                        style: const TextStyle(fontSize: 34),
+                      child: HabitSvgIcon(
+                        path: habit.icon ?? kDefaultHabitIcon,
+                        size: 34,
+                        color: accent,
                       ),
                     ),
                   ),
@@ -339,7 +341,7 @@ class HabitDetailScreen extends ConsumerWidget {
 
 class _SectionLabel extends StatelessWidget {
   final String text;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _SectionLabel(this.text, this.mc);
 
   @override
@@ -363,7 +365,7 @@ class _StatTile extends StatelessWidget {
   final String value;
   final String? suffix;
   final Color accent;
-  final MomentumColors mc;
+  final CadenceColors mc;
 
   const _StatTile({
     required this.label,
@@ -434,7 +436,7 @@ class _StatTile extends StatelessWidget {
 class _MonthGraph extends StatelessWidget {
   final List<String> dates;
   final Color accent;
-  final MomentumColors mc;
+  final CadenceColors mc;
 
   const _MonthGraph({
     required this.dates,
@@ -627,7 +629,7 @@ class _GraceChip extends ConsumerWidget {
 
 class _ReminderTile extends ConsumerWidget {
   final Habit habit;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _ReminderTile({required this.habit, required this.mc});
 
   Future<void> _pickTime(
@@ -638,9 +640,17 @@ class _ReminderTile extends ConsumerWidget {
       helpText: 'Set daily reminder',
     );
     if (picked != null && context.mounted) {
-      await ref
+      final ok = await ref
           .read(habitReminderNotifierProvider(habit.id).notifier)
           .set(habit, picked);
+      if (!ok && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please allow notifications in Settings to set a reminder'),
+          ),
+        );
+        return;
+      }
       ref.invalidate(habitReminderNotifierProvider(habit.id));
     }
   }
@@ -720,7 +730,7 @@ class _ReminderTile extends ConsumerWidget {
 class _SubtaskChecklist extends ConsumerWidget {
   final Habit habit;
   final Color accent;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _SubtaskChecklist(
       {required this.habit, required this.accent, required this.mc});
 
@@ -820,7 +830,7 @@ class _SubtaskChecklist extends ConsumerWidget {
 
 class _StackChainBadge extends ConsumerWidget {
   final Habit habit;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _StackChainBadge({required this.habit, required this.mc});
 
   @override
@@ -848,7 +858,7 @@ class _StackChainBadge extends ConsumerWidget {
 
 class _ChainChip extends StatelessWidget {
   final String label;
-  final MomentumColors mc;
+  final CadenceColors mc;
   final bool highlighted;
   const _ChainChip(
       {required this.label, required this.mc, this.highlighted = false});

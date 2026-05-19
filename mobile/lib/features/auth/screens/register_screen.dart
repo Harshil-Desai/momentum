@@ -13,6 +13,7 @@ class RegisterScreen extends ConsumerStatefulWidget {
 }
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmController = TextEditingController();
@@ -32,6 +33,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmController.dispose();
@@ -47,7 +49,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     final success = await ref
         .read(authProvider.notifier)
-        .register(email, password);
+        .register(email, password, name: _nameController.text.trim().isEmpty ? null : _nameController.text.trim());
     if (success && mounted) context.go('/habits');
   }
 
@@ -70,7 +72,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   children: [
                     const SizedBox(height: 72),
                     Text(
-                      'Momentum',
+                      'Cadence',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.fraunces(
                         fontSize: 32,
@@ -92,11 +94,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                     const SizedBox(height: 52),
                     _UnderlineField(
+                      controller: _nameController,
+                      label: 'Your name',
+                      keyboardType: TextInputType.name,
+                      textInputAction: TextInputAction.next,
+                      autofocus: true,
+                    ),
+                    const SizedBox(height: 28),
+                    _UnderlineField(
                       controller: _emailController,
                       label: 'Email',
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
-                      autofocus: true,
                     ),
                     const SizedBox(height: 28),
                     _UnderlineField(
@@ -113,7 +122,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       textInputAction: TextInputAction.done,
                       onSubmitted: (_) => _submit(),
                       borderColorOverride:
-                          _passwordsMatch ? MomentumPigments.pine : null,
+                          _passwordsMatch ? CadencePigments.pine : null,
                     ),
                     if (authState.error != null) ...[
                       const SizedBox(height: 12),

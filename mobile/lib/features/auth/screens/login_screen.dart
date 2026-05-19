@@ -50,7 +50,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   children: [
                     const SizedBox(height: 88),
                     Text(
-                      'Momentum',
+                      'Cadence',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.fraunces(
                         fontSize: 32,

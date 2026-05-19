@@ -41,13 +41,17 @@ class HabitReminderNotifier extends _$HabitReminderNotifier {
     );
   }
 
-  Future<void> set(Habit habit, TimeOfDay time) async {
+  Future<bool> set(Habit habit, TimeOfDay time) async {
+    final ns = NotificationService();
+    final granted = await ns.requestPermission();
+    if (!granted) return false;
+
     final prefs = await SharedPreferences.getInstance();
     final value =
         '${time.hour}:${time.minute.toString().padLeft(2, '0')}';
     await prefs.setString(_key(habitId), value);
 
-    await NotificationService().scheduleHabitReminder(
+    await ns.scheduleHabitReminder(
       habitId: habitId,
       habitName: habit.name,
       habitIcon: habit.icon,
@@ -60,6 +64,7 @@ class HabitReminderNotifier extends _$HabitReminderNotifier {
       hour: time.hour,
       minute: time.minute,
     ));
+    return true;
   }
 
   Future<void> cancel() async {

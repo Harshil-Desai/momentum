@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"momentum/models"
-	"momentum/repositories"
+	"cadence/models"
+	"cadence/repositories"
 )
 
 var dayNames = []string{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}

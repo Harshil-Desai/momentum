@@ -17,21 +17,30 @@ class SecureAuthStorage {
 
   Future<String?> readToken() => _storage.read(key: StorageKeys.jwtToken);
 
-  Future<void> saveUser({required String id, required String email}) async {
+  Future<void> saveUser({
+    required String id,
+    required String email,
+    String? name,
+  }) async {
     await _storage.write(key: StorageKeys.userId, value: id);
     await _storage.write(key: StorageKeys.userEmail, value: email);
+    if (name != null) {
+      await _storage.write(key: StorageKeys.userName, value: name);
+    }
   }
 
-  Future<({String id, String email})?> readUser() async {
+  Future<({String id, String email, String? name})?> readUser() async {
     final id = await _storage.read(key: StorageKeys.userId);
     final email = await _storage.read(key: StorageKeys.userEmail);
     if (id == null || email == null) return null;
-    return (id: id, email: email);
+    final name = await _storage.read(key: StorageKeys.userName);
+    return (id: id, email: email, name: name);
   }
 
   Future<void> clearAll() async {
     await _storage.delete(key: StorageKeys.jwtToken);
     await _storage.delete(key: StorageKeys.userId);
     await _storage.delete(key: StorageKeys.userEmail);
+    await _storage.delete(key: StorageKeys.userName);
   }
 }

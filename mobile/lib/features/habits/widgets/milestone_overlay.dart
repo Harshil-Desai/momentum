@@ -38,7 +38,7 @@ class MilestoneOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = MomentumPigments.fromHex(habitColor);
+    final accent = CadencePigments.fromHex(habitColor);
     final darkAccent = Color.lerp(accent, Colors.black, 0.30)!;
 
     return GestureDetector(

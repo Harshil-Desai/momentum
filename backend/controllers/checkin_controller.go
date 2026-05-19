@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"momentum/middleware"
-	"momentum/services"
+	"cadence/middleware"
+	"cadence/services"
 
 	"github.com/gin-gonic/gin"
 )

@@ -34,13 +34,13 @@ class CorrelationCard extends StatelessWidget {
 
 class _CorrelationRow extends StatelessWidget {
   final HabitCorrelation correlation;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _CorrelationRow({required this.correlation, required this.mc});
 
   @override
   Widget build(BuildContext context) {
     final pct = correlation.percentage.round();
-    const accent = MomentumPigments.pine;
+    const accent = CadencePigments.pine;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -90,7 +90,7 @@ class _CorrelationRow extends StatelessWidget {
 
 class _SectionLabel extends StatelessWidget {
   final String text;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _SectionLabel(this.text, this.mc);
 
   @override

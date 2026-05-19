@@ -1,6 +1,6 @@
-# Momentum
+# Cadence
 
-A habit-tracking app that meets you where you are. Log daily check-ins, watch streaks build, and reflect on patterns — without judgment.
+Find Your Rhythm. A habit-tracking app that helps you gently integrate positive habits into your daily life until they become an effortless, consistent beat.
 
 **Backend:** Go 1.24 · Gin · PostgreSQL 17  
 **Mobile:** Flutter/Dart 3.8+ · Riverpod · go_router

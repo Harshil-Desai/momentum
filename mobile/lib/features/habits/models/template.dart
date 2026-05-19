@@ -10,6 +10,7 @@ class HabitTemplate {
   final String category;
   final int sortOrder;
   final HabitFrequency frequency;
+  final bool isNegative;
 
   const HabitTemplate({
     required this.id,
@@ -21,6 +22,7 @@ class HabitTemplate {
     required this.category,
     required this.sortOrder,
     required this.frequency,
+    this.isNegative = false,
   });
 
   factory HabitTemplate.fromJson(Map<String, dynamic> json) {
@@ -33,6 +35,7 @@ class HabitTemplate {
       twoMinuteVersion: json['two_minute_version'] as String?,
       category: json['category'] as String? ?? '',
       sortOrder: json['sort_order'] as int? ?? 0,
+      isNegative: json['is_negative'] as bool? ?? false,
       frequency: json['frequency'] != null
           ? HabitFrequency.fromJson(json['frequency'] as Map<String, dynamic>)
           : const HabitFrequency(type: 'daily'),

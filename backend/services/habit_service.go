@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"momentum/models"
-	"momentum/repositories"
+	"cadence/models"
+	"cadence/repositories"
 )
 
 var ErrHabitNotFound = errors.New("habit not found")
@@ -144,6 +144,7 @@ func (s *HabitService) AdoptTemplate(userID, templateID string) (*models.Habit, 
 		Frequency:        tmpl.Frequency,
 		Note:             tmpl.Note,
 		TwoMinuteVersion: tmpl.TwoMinuteVersion,
+		IsNegative:       tmpl.IsNegative,
 	}
 	return s.CreateHabit(userID, req)
 }

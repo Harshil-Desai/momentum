@@ -14,6 +14,7 @@ class AuthState {
   final bool isAuthenticated;
   final String? userId;
   final String? email;
+  final String? name;
   final String? error;
 
   const AuthState({
@@ -21,6 +22,7 @@ class AuthState {
     this.isAuthenticated = false,
     this.userId,
     this.email,
+    this.name,
     this.error,
   });
 
@@ -29,6 +31,7 @@ class AuthState {
     bool? isAuthenticated,
     String? userId,
     String? email,
+    String? name,
     String? error,
   }) {
     return AuthState(
@@ -36,6 +39,7 @@ class AuthState {
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       userId: userId ?? this.userId,
       email: email ?? this.email,
+      name: name ?? this.name,
       error: error,
     );
   }
@@ -63,6 +67,7 @@ class Auth extends _$Auth {
       isAuthenticated: true,
       userId: user.id,
       email: user.email,
+      name: user.name,
     );
   }
 
@@ -83,15 +88,17 @@ class Auth extends _$Auth {
       final userMap = response.data['user'] as Map<String, dynamic>;
       final userId = userMap['id'] as String;
       final userEmail = userMap['email'] as String;
+      final userName = userMap['name'] as String?;
 
       final storage = SecureAuthStorage.shared;
       await storage.saveToken(token);
-      await storage.saveUser(id: userId, email: userEmail);
+      await storage.saveUser(id: userId, email: userEmail, name: userName);
 
       state = AsyncData(AuthState(
         isAuthenticated: true,
         userId: userId,
         email: userEmail,
+        name: userName,
       ));
 
       // Kick off a background sync — don't await, let UI proceed.
@@ -108,7 +115,7 @@ class Auth extends _$Auth {
     }
   }
 
-  Future<bool> register(String email, String password) async {
+  Future<bool> register(String email, String password, {String? name}) async {
     state = AsyncData(
       state.valueOrNull?.copyWith(isLoading: true, error: null) ??
           const AuthState(isLoading: true),
@@ -119,21 +126,24 @@ class Auth extends _$Auth {
       final response = await dio.post('/auth/register', data: {
         'email': email,
         'password': password,
+        if (name != null && name.trim().isNotEmpty) 'name': name.trim(),
       });
 
       final token = response.data['token'] as String;
       final userMap = response.data['user'] as Map<String, dynamic>;
       final userId = userMap['id'] as String;
       final userEmail = userMap['email'] as String;
+      final userName = userMap['name'] as String?;
 
       final storage = SecureAuthStorage.shared;
       await storage.saveToken(token);
-      await storage.saveUser(id: userId, email: userEmail);
+      await storage.saveUser(id: userId, email: userEmail, name: userName);
 
       state = AsyncData(AuthState(
         isAuthenticated: true,
         userId: userId,
         email: userEmail,
+        name: userName,
       ));
 
       unawaited(SyncService(ref.read(dioProvider)).fullRefresh(userId));

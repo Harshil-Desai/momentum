@@ -5,14 +5,16 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/habit.dart';
 import '../providers/habits_provider.dart';
+import '../providers/selected_date_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../widgets/icon_picker.dart';
 import '../widgets/milestone_overlay.dart';
 
 class HabitCard extends ConsumerStatefulWidget {
-  const HabitCard({super.key, required this.habit});
+  const HabitCard({super.key, required this.habit, this.selectedDate});
 
   final Habit habit;
+  final DateTime? selectedDate;
 
   @override
   ConsumerState<HabitCard> createState() => _HabitCardState();
@@ -42,20 +44,29 @@ class _HabitCardState extends ConsumerState<HabitCard>
     super.dispose();
   }
 
-  Color get _accent => MomentumPigments.fromHex(widget.habit.color);
+  Color get _accent => CadencePigments.fromHex(widget.habit.color);
+
+  String? get _selectedDateStr {
+    final d = widget.selectedDate;
+    if (d == null) return null;
+    return selectedDateString(d);
+  }
 
   Future<void> _handleCheckin(BuildContext context) async {
     HapticFeedback.lightImpact();
+    final dateStr = _selectedDateStr;
     final historyData = ref.read(habitHistoryDataProvider(widget.habit.id)).valueOrNull;
-    final alreadyChecked = historyData?.checkedToday ?? false;
+    final alreadyChecked = dateStr != null
+        ? (historyData?.dates.contains(dateStr) ?? false)
+        : (historyData?.checkedToday ?? false);
 
     if (alreadyChecked) {
-      await ref.read(habitCheckinProvider(widget.habit.id).notifier).removeToday();
+      await ref.read(habitCheckinProvider(widget.habit.id).notifier).removeToday(date: dateStr);
       return;
     }
 
     final milestone =
-        await ref.read(habitCheckinProvider(widget.habit.id).notifier).logToday();
+        await ref.read(habitCheckinProvider(widget.habit.id).notifier).logToday(date: dateStr);
 
     if (!context.mounted) return;
 
@@ -88,8 +99,11 @@ class _HabitCardState extends ConsumerState<HabitCard>
 
     final historyAsync = ref.watch(habitHistoryDataProvider(habit.id));
     final streakAsync = ref.watch(habitStreakProvider(habit.id));
+    final dateStr = _selectedDateStr;
     final checkedToday = historyAsync.maybeWhen(
-      data: (h) => h.checkedToday,
+      data: (h) => dateStr != null
+          ? h.dates.contains(dateStr)
+          : h.checkedToday,
       orElse: () => false,
     );
     final streak = streakAsync.maybeWhen(
@@ -147,97 +161,129 @@ class _HabitCardState extends ConsumerState<HabitCard>
       ),
       child: InkWell(
         onTap: () => context.push('/habits/${habit.id}', extra: habit),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 22),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Habit icon tile (SVG)
-                  Container(
-                    width: 56, height: 56,
-                    decoration: BoxDecoration(
-                      color: accentTint,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: HabitSvgIcon(
-                        path: habit.icon ?? kDefaultHabitIcon,
-                        size: 30,
-                        color: _accent,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 18),
-                  // Name + streak
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          habit.name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.inter(
-                            fontSize: 17, fontWeight: FontWeight.w500,
+        child: AnimatedOpacity(
+          opacity: checkedToday ? 0.55 : 1.0,
+          duration: const Duration(milliseconds: 300),
+          child: Column(
+            children: [
+              Container(
+                color: checkedToday ? accent.withAlpha(13) : Colors.transparent,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 20, 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Habit icon tile (SVG)
+                      Container(
+                        width: 46, height: 46,
+                        decoration: BoxDecoration(
+                          color: checkedToday
+                              ? accent.withAlpha(18)
+                              : accentTint,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: HabitSvgIcon(
+                            path: habit.icon ?? kDefaultHabitIcon,
+                            size: 26,
                             color: checkedToday
-                                ? mc.inkTertiary
-                                : mc.inkPrimary,
-                            letterSpacing: -0.2, height: 1.2,
+                                ? accent.withAlpha(120)
+                                : accent,
                           ),
                         ),
-                        const SizedBox(height: 6),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
+                      ),
+                      const SizedBox(width: 14),
+                      // Name + meta row
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ScaleTransition(
-                              scale: _streakScale,
-                              child: Text(
-                                streak == 0 ? '—' : '$streak',
-                                style: GoogleFonts.fraunces(
-                                  fontSize: 56, fontWeight: FontWeight.w400,
-                                  color: streak == 0
-                                      ? mc.inkTertiary
-                                      : accent,
-                                  letterSpacing: -1.4, height: 1,
-                                ).copyWith(
-                                  fontFeatures: const [
-                                    FontFeature.liningFigures(),
-                                  ],
-                                ),
+                            Text(
+                              habit.name,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: checkedToday
+                                    ? mc.inkTertiary
+                                    : mc.inkPrimary,
+                                letterSpacing: -0.2,
+                                height: 1.2,
+                                decoration: checkedToday
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
+                                decorationColor: mc.inkTertiary,
+                                decorationThickness: 1.5,
                               ),
                             ),
-                            const SizedBox(width: 6),
-                            if (streak > 0)
-                              Text(
-                                streak == 1 ? 'day' : 'days',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12, color: mc.inkSecondary,
-                                  letterSpacing: 0.4,
+                            const SizedBox(height: 5),
+                            Row(
+                              children: [
+                                // Streak pill
+                                if (streak > 0) ...[
+                                  ScaleTransition(
+                                    scale: _streakScale,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: accent.withAlpha(20),
+                                        borderRadius: BorderRadius.circular(99),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            '🔥',
+                                            style: const TextStyle(fontSize: 11),
+                                          ),
+                                          const SizedBox(width: 3),
+                                          Text(
+                                            '$streak',
+                                            style: GoogleFonts.inter(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                              color: accent,
+                                              letterSpacing: -0.2,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                ],
+                                Text(
+                                  habit.frequency.label,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    color: mc.inkTertiary,
+                                    letterSpacing: -0.05,
+                                  ),
                                 ),
-                              ),
+                              ],
+                            ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 14),
+                      // Check circle
+                      _CheckCircle(
+                        accent: accent,
+                        bgCanvas: mc.bgCanvas,
+                        checked: checkedToday,
+                        loading: isLoading,
+                        onTap: () => _handleCheckin(context),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 18),
-                  // Check circle
-                  _CheckCircle(
-                    accent: accent,
-                    bgCanvas: mc.bgCanvas,
-                    checked: checkedToday,
-                    loading: isLoading,
-                    onTap: () => _handleCheckin(context),
-                  ),
-                ],
+                ),
               ),
-            ),
-            // Hairline divider
-            Divider(height: 1, color: mc.hairline, indent: 24, endIndent: 24),
-          ],
+              // Hairline divider
+              Divider(height: 1, color: mc.hairline, indent: 24, endIndent: 24),
+            ],
+          ),
         ),
       ),
     );

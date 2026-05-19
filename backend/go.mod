@@ -1,5 +1,5 @@
-// module github.com/yourusername/momentum-backend
-module momentum
+// module github.com/yourusername/cadence-backend
+module cadence
 
 go 1.24.0
 

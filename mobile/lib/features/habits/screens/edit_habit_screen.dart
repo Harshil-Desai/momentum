@@ -155,10 +155,10 @@ class _EditHabitScreenState extends ConsumerState<EditHabitScreen> {
                   selectedIcon: _iconPath,
                   onIconSelected: (p) => setState(() => _iconPath = p),
                   backgroundColor: _selectedColor != null
-                      ? MomentumPigments.fromHex(_selectedColor).withAlpha(26)
+                      ? CadencePigments.fromHex(_selectedColor).withAlpha(26)
                       : mc.hairline,
                   iconColor: _selectedColor != null
-                      ? MomentumPigments.fromHex(_selectedColor)
+                      ? CadencePigments.fromHex(_selectedColor)
                       : mc.inkPrimary,
                 ),
               ),

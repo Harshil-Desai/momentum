@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"momentum/models"
-	"momentum/repositories"
+	"cadence/models"
+	"cadence/repositories"
 )
 
 var ErrFutureDate = errors.New("checkin date cannot be in the future")

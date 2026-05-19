@@ -4,7 +4,7 @@ import 'package:mobile/main.dart';
 
 void main() {
   testWidgets('App renders without crashing', (WidgetTester tester) async {
-    await tester.pumpWidget(const ProviderScope(child: MomentumApp()));
+    await tester.pumpWidget(const ProviderScope(child: CadenceApp()));
     expect(find.byType(ProviderScope), findsOneWidget);
   });
 }

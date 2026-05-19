@@ -10,4 +10,5 @@ type HabitTemplate struct {
 	TwoMinuteVersion  *string   `json:"two_minute_version,omitempty"`
 	Category          string    `json:"category"`
 	SortOrder         int       `json:"sort_order"`
+	IsNegative        bool      `json:"is_negative"`
 }

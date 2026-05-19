@@ -173,7 +173,7 @@ class _InsightsBody extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: MomentumPigments.iris.withAlpha(18),
+              color: CadencePigments.iris.withAlpha(18),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
@@ -262,7 +262,7 @@ class _InsightsBody extends StatelessWidget {
 class _BigStatTile extends StatelessWidget {
   final String value;
   final String label;
-  final MomentumColors mc;
+  final CadenceColors mc;
 
   const _BigStatTile({
     required this.value,
@@ -312,7 +312,7 @@ class _BigStatTile extends StatelessWidget {
 
 class _SectionLabel extends StatelessWidget {
   final String text;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _SectionLabel(this.text, this.mc);
 
   @override
@@ -333,7 +333,7 @@ class _SectionLabel extends StatelessWidget {
 
 class _DayOfWeekChart extends StatelessWidget {
   final List<DayCount> counts;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _DayOfWeekChart({required this.counts, required this.mc});
 
   @override
@@ -343,7 +343,7 @@ class _DayOfWeekChart extends StatelessWidget {
         : counts.map((c) => c.count).reduce((a, b) => a > b ? a : b);
 
     final countMap = {for (var c in counts) c.dayOfWeek: c.count};
-    final accentColor = MomentumPigments.cobalt;
+    final accentColor = CadencePigments.cobalt;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -402,7 +402,7 @@ class _DayOfWeekChart extends StatelessWidget {
 
 class _StreakRow extends StatelessWidget {
   final HabitStreakSummary habit;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _StreakRow({required this.habit, required this.mc});
 
   @override
@@ -456,7 +456,7 @@ class _StreakRow extends StatelessWidget {
 class _AdvancedTeaser extends StatelessWidget {
   final int current;
   final int threshold;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _AdvancedTeaser(
       {required this.current, required this.threshold, required this.mc});
 
@@ -521,13 +521,13 @@ class _AdvancedTeaser extends StatelessWidget {
 
 class _EnergyCorrelationChart extends StatelessWidget {
   final List<EnergyCorrelationPoint> points;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _EnergyCorrelationChart(
       {required this.points, required this.mc});
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = MomentumPigments.sea;
+    final accentColor = CadencePigments.sea;
     final maxRate = points.isEmpty
         ? 1.0
         : points

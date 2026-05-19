@@ -43,7 +43,7 @@ class OfflineQueue {
 
   static Future<Database> _open() async {
     if (_db != null) return _db!;
-    final dbPath = p.join(await getDatabasesPath(), 'momentum_queue.db');
+    final dbPath = p.join(await getDatabasesPath(), 'cadence_queue.db');
     _db = await openDatabase(
       dbPath,
       version: 1,

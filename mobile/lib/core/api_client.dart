@@ -8,7 +8,7 @@ part 'api_client.g.dart';
 
 const _baseUrl = String.fromEnvironment(
   'API_BASE_URL',
-  defaultValue: 'http://10.25.10.49:8080/api',
+  defaultValue: 'https://momentum-production-419f.up.railway.app/api',
 );
 
 // Methods whose failures should be queued for offline retry (mutations only).

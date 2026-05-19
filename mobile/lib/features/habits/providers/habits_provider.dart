@@ -16,6 +16,7 @@ part 'habits_provider.g.dart';
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 Habit _habitFromRow(Map<String, dynamic> row) {
+  final createdAtMs = row['created_at'] as int?;
   return Habit(
     id: row['id'] as String,
     userId: row['user_id'] as String,
@@ -36,6 +37,9 @@ Habit _habitFromRow(Map<String, dynamic> row) {
             .map((e) => HabitSubtask.fromJson(e as Map<String, dynamic>))
             .toList()
         : [],
+    createdAt: createdAtMs != null
+        ? DateTime.fromMillisecondsSinceEpoch(createdAtMs)
+        : null,
   );
 }
 
@@ -325,6 +329,11 @@ class HabitHistoryData extends _$HabitHistoryData {
     final localDates =
         localRows.map((r) => r['date'] as String).toList();
 
+    // checkedToday is always derived from local DB — local writes happen first
+    // and the API may lag behind, so trusting the API here causes flicker.
+    final today = _todayStr();
+    final checkedTodayLocal = localDates.contains(today);
+
     // 2. Try to enrich from API; fall back gracefully.
     try {
       final dio = ref.read(dioProvider);
@@ -334,7 +343,6 @@ class HabitHistoryData extends _$HabitHistoryData {
               .toList() ??
           localDates;
       final count = response.data['lifetime_count'] as int? ?? dates.length;
-      final checkedToday = response.data['checked_today'] as bool? ?? false;
       final missedYesterday =
           response.data['missed_yesterday'] as bool? ?? false;
       final graceUsed =
@@ -344,18 +352,17 @@ class HabitHistoryData extends _$HabitHistoryData {
       return HabitHistory(
         dates: dates,
         lifetimeCount: count,
-        checkedToday: checkedToday,
+        checkedToday: checkedTodayLocal,
         missedYesterday: missedYesterday,
         graceUsedThisMonth: graceUsed,
         canClaimGrace: canClaimGrace,
         bestStreak: _computeBestStreak(dates),
       );
     } catch (_) {
-      final today = _todayStr();
       return HabitHistory(
         dates: localDates,
         lifetimeCount: localDates.length,
-        checkedToday: localDates.contains(today),
+        checkedToday: checkedTodayLocal,
         missedYesterday: false,
         bestStreak: _computeBestStreak(localDates),
       );
@@ -461,31 +468,33 @@ class HabitCheckin extends _$HabitCheckin {
   @override
   CheckinState build(String habitId) => const CheckinState();
 
-  Future<bool> removeToday() async {
+  Future<bool> removeToday({String? date}) async {
     state = const CheckinState(isLoading: true);
+    // 1. Remove locally first so UI reflects the change immediately.
+    final today = date ?? _todayStr();
+    final row = await AppDatabase.instance.getCheckinForDate(habitId, today);
+    if (row != null) {
+      await AppDatabase.instance.deleteCheckin(row['id'] as String);
+    }
+    ref.invalidate(habitStreakProvider(habitId));
+    ref.invalidate(habitHistoryDataProvider(habitId));
+    state = const CheckinState();
+
+    // 2. Sync deletion to API in background.
     try {
       final dio = ref.read(dioProvider);
       await dio.delete('/habits/$habitId/checkins');
-      // Remove local checkin for today.
-      final today = _todayStr();
-      final row = await AppDatabase.instance.getCheckinForDate(habitId, today);
-      if (row != null) {
-        await AppDatabase.instance.deleteCheckin(row['id'] as String);
-      }
-      state = const CheckinState();
-      ref.invalidate(habitStreakProvider(habitId));
-      ref.invalidate(habitHistoryDataProvider(habitId));
       return true;
     } on DioException catch (_) {
-      state = const CheckinState();
-      return false;
+      // Offline — local delete stands; will sync later via queue.
+      return true;
     }
   }
 
   /// Returns milestone value if one was just reached, 0 if success, -1 on failure.
-  Future<int> logToday() async {
+  Future<int> logToday({String? date}) async {
     state = const CheckinState(isLoading: true);
-    final today = _todayStr();
+    final today = date ?? _todayStr();
     final now = DateTime.now().millisecondsSinceEpoch;
 
     // Idempotency check.

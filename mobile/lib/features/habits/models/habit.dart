@@ -85,6 +85,7 @@ class Habit {
   final bool isNegative;
   final HabitFrequency frequency;
   final List<HabitSubtask> subtasks;
+  final DateTime? createdAt;
 
   const Habit({
     required this.id,
@@ -99,6 +100,7 @@ class Habit {
     this.isNegative = false,
     required this.frequency,
     this.subtasks = const [],
+    this.createdAt,
   });
 
   factory Habit.fromJson(Map<String, dynamic> json) {

@@ -8,6 +8,7 @@ import (
 type User struct {
 	ID           string     `json:"id" db:"id"`
 	Email        string     `json:"email" db:"email"`
+	Name         *string    `json:"name,omitempty" db:"name"`
 	PasswordHash string     `json:"-" db:"password_hash"` // Hidden from JSON
 	PushToken    *string    `json:"push_token,omitempty" db:"push_token"` // Nullable
 	CreatedAt    time.Time  `json:"created_at" db:"created_at"`
@@ -16,8 +17,9 @@ type User struct {
 
 // UserCreateRequest represents the request for creating a user
 type UserCreateRequest struct {
-	Email    string `json:"email" binding:"required,email" validate:"required,email"`
-	Password string `json:"password" binding:"required,min=6" validate:"required,min=6"`
+	Email    string  `json:"email" binding:"required,email" validate:"required,email"`
+	Password string  `json:"password" binding:"required,min=6" validate:"required,min=6"`
+	Name     *string `json:"name,omitempty"`
 }
 
 // UserLoginRequest represents the request for user login
@@ -30,6 +32,7 @@ type UserLoginRequest struct {
 type UserResponse struct {
 	ID        string    `json:"id"`
 	Email     string    `json:"email"`
+	Name      *string   `json:"name,omitempty"`
 	PushToken *string   `json:"push_token,omitempty"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -52,6 +55,7 @@ func (u *User) ToResponse() *UserResponse {
 	return &UserResponse{
 		ID:        u.ID,
 		Email:     u.Email,
+		Name:      u.Name,
 		PushToken: u.PushToken,
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,

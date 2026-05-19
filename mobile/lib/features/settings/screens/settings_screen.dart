@@ -136,7 +136,7 @@ class SettingsScreen extends ConsumerWidget {
 
 class _SettingsSectionLabel extends StatelessWidget {
   final String text;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _SettingsSectionLabel(this.text, this.mc);
 
   @override
@@ -160,7 +160,7 @@ class _SettingsSectionLabel extends StatelessWidget {
 
 class _ArchivedHabitRow extends ConsumerWidget {
   final Habit habit;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _ArchivedHabitRow({required this.habit, required this.mc});
 
   @override
@@ -260,7 +260,7 @@ class _AccountRow extends StatelessWidget {
   final String label;
   final bool danger;
   final VoidCallback onTap;
-  final MomentumColors mc;
+  final CadenceColors mc;
 
   const _AccountRow({
     required this.label,
@@ -292,7 +292,7 @@ class _AccountRow extends StatelessWidget {
 // ── Theme selector ────────────────────────────────────────────────────────────
 
 class _ThemeSelector extends ConsumerWidget {
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _ThemeSelector({required this.mc});
 
   @override
@@ -326,7 +326,7 @@ class _ThemeSelector extends ConsumerWidget {
 // ── Sign out confirmation sheet ───────────────────────────────────────────────
 
 class _SignOutSheet extends StatelessWidget {
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _SignOutSheet({required this.mc});
 
   @override

@@ -2,8 +2,8 @@ package repositories
 
 import (
 	"context"
-	"momentum/db"
-	"momentum/models"
+	"cadence/db"
+	"cadence/models"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -17,21 +17,21 @@ func NewUserRepository() *UserRepository {
 
 func (r *UserRepository) Create(user *models.User) error {
 	query := `
-		INSERT INTO users (email, password_hash, push_token)
-		VALUES ($1, $2, $3)
+		INSERT INTO users (email, password_hash, push_token, name)
+		VALUES ($1, $2, $3, $4)
 		RETURNING id, created_at, updated_at
 	`
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	return db.Pool.QueryRow(ctx, query,
-		user.Email, user.PasswordHash, user.PushToken,
+		user.Email, user.PasswordHash, user.PushToken, user.Name,
 	).Scan(&user.ID, &user.CreatedAt, &user.UpdatedAt)
 }
 
 func (r *UserRepository) FindByID(id string) (*models.User, error) {
 	query := `
-		SELECT id, email, password_hash, push_token, created_at, updated_at
+		SELECT id, email, password_hash, push_token, name, created_at, updated_at
 		FROM users WHERE id = $1
 	`
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -40,7 +40,7 @@ func (r *UserRepository) FindByID(id string) (*models.User, error) {
 	var user models.User
 	err := db.Pool.QueryRow(ctx, query, id).Scan(
 		&user.ID, &user.Email, &user.PasswordHash, &user.PushToken,
-		&user.CreatedAt, &user.UpdatedAt,
+		&user.Name, &user.CreatedAt, &user.UpdatedAt,
 	)
 	if err == pgx.ErrNoRows {
 		return nil, nil
@@ -53,7 +53,7 @@ func (r *UserRepository) FindByID(id string) (*models.User, error) {
 
 func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
 	query := `
-		SELECT id, email, password_hash, push_token, created_at, updated_at
+		SELECT id, email, password_hash, push_token, name, created_at, updated_at
 		FROM users WHERE email = $1
 	`
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -62,7 +62,7 @@ func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
 	var user models.User
 	err := db.Pool.QueryRow(ctx, query, email).Scan(
 		&user.ID, &user.Email, &user.PasswordHash, &user.PushToken,
-		&user.CreatedAt, &user.UpdatedAt,
+		&user.Name, &user.CreatedAt, &user.UpdatedAt,
 	)
 	if err == pgx.ErrNoRows {
 		return nil, nil

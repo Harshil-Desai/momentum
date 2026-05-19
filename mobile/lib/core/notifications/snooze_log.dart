@@ -34,7 +34,7 @@ class SnoozeLog {
 
   static Future<Database> _open() async {
     if (_db != null) return _db!;
-    final dbPath = p.join(await getDatabasesPath(), 'momentum_snooze.db');
+    final dbPath = p.join(await getDatabasesPath(), 'cadence_snooze.db');
     _db = await openDatabase(
       dbPath,
       version: 1,

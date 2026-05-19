@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 
-	"momentum/services"
+	"cadence/services"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,8 +23,9 @@ type loginRequest struct {
 }
 
 type registerRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
+	Email    string  `json:"email" binding:"required,email"`
+	Password string  `json:"password" binding:"required"`
+	Name     *string `json:"name,omitempty"`
 }
 
 func (ac *AuthController) Login(c *gin.Context) {
@@ -57,7 +58,7 @@ func (ac *AuthController) Register(c *gin.Context) {
 		return
 	}
 
-	token, user, err := ac.authService.Register(req.Email, req.Password)
+	token, user, err := ac.authService.Register(req.Email, req.Password, req.Name)
 	if err != nil {
 		if errors.Is(err, services.ErrEmailTaken) {
 			c.JSON(http.StatusConflict, gin.H{"error": "Email already in use"})

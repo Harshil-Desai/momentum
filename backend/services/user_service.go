@@ -1,6 +1,6 @@
 package services
 
-import "momentum/models"
+import "cadence/models"
 
 type UserService struct {
 	// Will be injected with UserRepository

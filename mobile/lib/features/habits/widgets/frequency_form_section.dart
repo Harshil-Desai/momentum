@@ -58,6 +58,7 @@ class _FrequencyFormSectionState extends State<FrequencyFormSection> {
         Text('Frequency', style: Theme.of(context).textTheme.labelLarge),
         const SizedBox(height: 8),
         SegmentedButton<String>(
+          showSelectedIcon: false,
           segments: const [
             ButtonSegment(value: 'daily', label: Text('Daily')),
             ButtonSegment(value: 'weekly', label: Text('Weekly')),

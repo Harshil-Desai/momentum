@@ -58,7 +58,7 @@ class AppDatabase {
   ];
 
   Future<Database> _open() async {
-    final dbPath = p.join(await getDatabasesPath(), 'momentum.db');
+    final dbPath = p.join(await getDatabasesPath(), 'cadence.db');
     return openDatabase(
       dbPath,
       version: 1,

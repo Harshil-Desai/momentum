@@ -25,17 +25,17 @@ class ForecastCard extends StatelessWidget {
 
 class _ForecastTile extends StatelessWidget {
   final HabitForecast forecast;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _ForecastTile({required this.forecast, required this.mc});
 
   @override
   Widget build(BuildContext context) {
     final pct = (forecast.completionRate * 100).round();
     final accent = pct >= 90
-        ? MomentumPigments.pine
+        ? CadencePigments.pine
         : pct >= 70
-            ? MomentumPigments.sea
-            : MomentumPigments.cobalt;
+            ? CadencePigments.sea
+            : CadencePigments.cobalt;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -95,7 +95,7 @@ class _ForecastTile extends StatelessWidget {
 
 class _SectionLabel extends StatelessWidget {
   final String text;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const _SectionLabel(this.text, this.mc);
 
   @override

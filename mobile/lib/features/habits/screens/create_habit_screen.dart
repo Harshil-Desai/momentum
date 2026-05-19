@@ -57,13 +57,10 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
         );
 
     if (created != null && _pendingReminder != null) {
-      try {
-        await ref
-            .read(habitReminderNotifierProvider(created.id).notifier)
-            .set(created, _pendingReminder!);
-      } catch (_) {
-        // Habit was created; reminder scheduling failed silently.
-      }
+      await ref
+          .read(habitReminderNotifierProvider(created.id).notifier)
+          .set(created, _pendingReminder!);
+      // Permission denied is handled silently here — habit was still created.
     }
 
     if (!mounted) return;
@@ -207,10 +204,10 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                   selectedIcon: _iconPath,
                   onIconSelected: (p) => setState(() => _iconPath = p),
                   backgroundColor: _selectedColor != null
-                      ? MomentumPigments.fromHex(_selectedColor).withAlpha(26)
+                      ? CadencePigments.fromHex(_selectedColor).withAlpha(26)
                       : mc.hairline,
                   iconColor: _selectedColor != null
-                      ? MomentumPigments.fromHex(_selectedColor)
+                      ? CadencePigments.fromHex(_selectedColor)
                       : mc.inkPrimary,
                 ),
               ),
@@ -484,7 +481,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
 class PigmentPicker extends StatelessWidget {
   final String? selected;
   final ValueChanged<String?> onChanged;
-  final MomentumColors mc;
+  final CadenceColors mc;
 
   const PigmentPicker({
     super.key,
@@ -500,8 +497,8 @@ class PigmentPicker extends StatelessWidget {
     ];
 
     return Row(
-      children: List.generate(MomentumPigments.all.length, (i) {
-        final color = MomentumPigments.all[i];
+      children: List.generate(CadencePigments.all.length, (i) {
+        final color = CadencePigments.all[i];
         final hex = hexes[i];
         final isSelected = selected == hex;
 
@@ -525,7 +522,7 @@ class PigmentPicker extends StatelessWidget {
                 if (isSelected) ...[
                   const SizedBox(height: 4),
                   Text(
-                    MomentumPigments.names[i],
+                    CadencePigments.names[i],
                     style: GoogleFonts.inter(
                       fontSize: 9,
                       fontWeight: FontWeight.w500,
@@ -549,7 +546,7 @@ class HabitTypeChip extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback onTap;
-  final MomentumColors mc;
+  final CadenceColors mc;
 
   const HabitTypeChip({
     super.key,
@@ -591,7 +588,7 @@ class HabitTypeChip extends StatelessWidget {
 
 class HabitSectionLabel extends StatelessWidget {
   final String text;
-  final MomentumColors mc;
+  final CadenceColors mc;
   const HabitSectionLabel(this.text, this.mc, {super.key});
 
   @override
@@ -614,7 +611,7 @@ class StackAfterPicker extends ConsumerWidget {
   final String? currentHabitId;
   final String? selectedId;
   final ValueChanged<String?> onChanged;
-  final MomentumColors mc;
+  final CadenceColors mc;
 
   const StackAfterPicker({
     super.key,

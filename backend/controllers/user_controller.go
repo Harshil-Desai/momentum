@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 
-	"momentum/middleware"
-	"momentum/models"
+	"cadence/middleware"
+	"cadence/models"
 
 	"github.com/gin-gonic/gin"
 )

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"momentum/db"
+	"cadence/db"
 )
 
 var MilestoneThresholds = []int{7, 30, 100, 365}
