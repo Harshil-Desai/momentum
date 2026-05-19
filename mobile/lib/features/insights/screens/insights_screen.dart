@@ -498,19 +498,32 @@ class _AdvancedTeaser extends StatelessWidget {
               height: 1.4,
             ),
           ),
-          if (current > 0) ...[
-            const SizedBox(height: 10),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(3),
-              child: LinearProgressIndicator(
-                value: current / threshold,
-                minHeight: 4,
-                backgroundColor: mc.hairline,
-                valueColor:
-                    AlwaysStoppedAnimation<Color>(mc.inkPrimary),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  child: LinearProgressIndicator(
+                    value: current / threshold,
+                    minHeight: 5,
+                    backgroundColor: mc.hairline,
+                    valueColor: AlwaysStoppedAnimation<Color>(mc.inkPrimary),
+                  ),
+                ),
               ),
-            ),
-          ],
+              const SizedBox(width: 10),
+              Text(
+                '$current / $threshold',
+                style: GoogleFonts.inter(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: mc.inkTertiary,
+                  letterSpacing: -0.05,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

@@ -5,19 +5,22 @@ import (
 
 	"cadence/middleware"
 	"cadence/models"
+	"cadence/services"
 
 	"github.com/gin-gonic/gin"
 )
 
 type UserController struct {
-	// Will be injected with UserService
+	userService *services.UserService
+}
+
+func NewUserController(userService *services.UserService) *UserController {
+	return &UserController{userService: userService}
 }
 
 // GetUsers returns a list of users
 func (uc *UserController) GetUsers(c *gin.Context) {
-	// TODO: Implement user retrieval logic
 	users := []models.UserResponse{}
-
 	c.JSON(http.StatusOK, gin.H{
 		"users": users,
 		"count": len(users),
@@ -26,7 +29,6 @@ func (uc *UserController) GetUsers(c *gin.Context) {
 
 // GetUser returns a single user by ID
 func (uc *UserController) GetUser(c *gin.Context) {
-	// TODO: Implement single user retrieval
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Get user endpoint - to be implemented",
 	})
@@ -56,4 +58,26 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "User created successfully",
 	})
+}
+
+// DeleteMe deletes the authenticated user and all their data, returning 204 on success.
+func (uc *UserController) DeleteMe(c *gin.Context) {
+	userID, exists := c.Get(middleware.UserIDKey)
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	id, ok := userID.(string)
+	if !ok || id == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	if err := uc.userService.DeleteUser(id); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete account"})
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }

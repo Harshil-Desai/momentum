@@ -7,11 +7,22 @@ import (
 	"cadence/routes"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	cfg := config.LoadConfig()
+
+	if cfg.SentryDSN != "" {
+		if err := sentry.Init(sentry.ClientOptions{
+			Dsn:              cfg.SentryDSN,
+			Environment:      cfg.Environment,
+			TracesSampleRate: 0.2,
+		}); err != nil {
+			log.Printf("Sentry initialization failed: %v", err)
+		}
+	}
 
 	dbConfig := &db.Config{
 		URL:             cfg.DatabaseURL,

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
@@ -5,13 +6,18 @@ import 'package:timezone/data/latest.dart' as tz_data;
 /// Top-level callback required by flutter_local_notifications on Android.
 @pragma('vm:entry-point')
 void _onNotificationResponse(NotificationResponse response) {
-  // Handled by the app when it foregrounds; no-op here.
+  NotificationService._tapPayloadController.add(response.payload ?? '');
 }
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._();
   factory NotificationService() => _instance;
   NotificationService._();
+
+  /// Emits the habit ID payload whenever a notification is tapped.
+  static final _tapPayloadController =
+      StreamController<String>.broadcast();
+  static Stream<String> get onTap => _tapPayloadController.stream;
 
   final _plugin = FlutterLocalNotificationsPlugin();
   bool _initialized = false;
@@ -34,6 +40,16 @@ class NotificationService {
       onDidReceiveNotificationResponse: _onNotificationResponse,
       onDidReceiveBackgroundNotificationResponse: _onNotificationResponse,
     );
+
+    // Handle tap when app was terminated and launched via notification.
+    final launchDetails = await _plugin.getNotificationAppLaunchDetails();
+    if (launchDetails?.didNotificationLaunchApp == true) {
+      final payload = launchDetails!.notificationResponse?.payload;
+      if (payload != null && payload.isNotEmpty) {
+        _tapPayloadController.add(payload);
+      }
+    }
+
     _initialized = true;
   }
 
@@ -105,6 +121,7 @@ class NotificationService {
       scheduled,
       const NotificationDetails(
           android: androidDetails, iOS: iosDetails),
+      payload: habitId,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,

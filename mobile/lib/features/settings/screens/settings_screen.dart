@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../habits/providers/habits_provider.dart';
 import '../../habits/models/habit.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/api_client.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -105,11 +107,33 @@ class SettingsScreen extends ConsumerWidget {
 
                   Divider(height: 1, color: mc.hairline),
 
+                  // ── Support ───────────────────────────────────────────
+                  _SettingsSectionLabel('SUPPORT', mc),
+                  _AccountRow(
+                    label: 'Send feedback',
+                    icon: Icons.mail_outline_rounded,
+                    mc: mc,
+                    onTap: () => launchUrl(
+                      Uri.parse('mailto:hello@cadence.app?subject=Cadence%20Feedback'),
+                    ),
+                  ),
+                  _AccountRow(
+                    label: 'Privacy policy',
+                    icon: Icons.shield_outlined,
+                    mc: mc,
+                    onTap: () => launchUrl(
+                      Uri.parse('https://cadence.app/privacy'),
+                      mode: LaunchMode.externalApplication,
+                    ),
+                  ),
+
+                  Divider(height: 1, color: mc.hairline),
+
                   // ── Account ───────────────────────────────────────────
                   _SettingsSectionLabel('ACCOUNT', mc),
                   _AccountRow(
                     label: 'Sign out',
-                    danger: true,
+                    icon: Icons.logout_rounded,
                     mc: mc,
                     onTap: () async {
                       final confirmed = await showModalBottomSheet<bool>(
@@ -119,6 +143,33 @@ class SettingsScreen extends ConsumerWidget {
                       if (confirmed == true) {
                         await ref.read(authProvider.notifier).logout();
                         if (context.mounted) context.go('/login');
+                      }
+                    },
+                  ),
+                  _AccountRow(
+                    label: 'Delete account',
+                    icon: Icons.delete_outline_rounded,
+                    danger: true,
+                    mc: mc,
+                    onTap: () async {
+                      final confirmed = await showModalBottomSheet<bool>(
+                        context: context,
+                        builder: (ctx) => _DeleteAccountSheet(mc: mc),
+                      );
+                      if (confirmed == true && context.mounted) {
+                        try {
+                          final dio = ref.read(dioProvider);
+                          await dio.delete('/users/me');
+                          await ref.read(authProvider.notifier).logout();
+                          if (context.mounted) context.go('/login');
+                        } catch (_) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Failed to delete account. Try again.')),
+                            );
+                          }
+                        }
                       }
                     },
                   ),
@@ -261,28 +312,39 @@ class _AccountRow extends StatelessWidget {
   final bool danger;
   final VoidCallback onTap;
   final CadenceColors mc;
+  final IconData? icon;
 
   const _AccountRow({
     required this.label,
     required this.onTap,
     required this.mc,
     this.danger = false,
+    this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
+    final color = danger ? mc.danger : mc.inkPrimary;
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
-        child: Text(
-          label,
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: danger ? mc.danger : mc.inkPrimary,
-            letterSpacing: -0.1,
-          ),
+        padding: const EdgeInsets.fromLTRB(24, 15, 24, 15),
+        child: Row(
+          children: [
+            if (icon != null) ...[
+              Icon(icon, size: 18, color: color),
+              const SizedBox(width: 12),
+            ],
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                color: color,
+                letterSpacing: -0.1,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -319,6 +381,89 @@ class _ThemeSelector extends ConsumerWidget {
       selected: {current},
       onSelectionChanged: (selection) =>
           ref.read(themeNotifierProvider.notifier).setMode(selection.first),
+    );
+  }
+}
+
+// ── Sign out confirmation sheet ───────────────────────────────────────────────
+
+// ── Delete account confirmation sheet ────────────────────────────────────────
+
+class _DeleteAccountSheet extends StatelessWidget {
+  final CadenceColors mc;
+  const _DeleteAccountSheet({required this.mc});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Center(
+            child: Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: mc.hairlineStrong,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Delete account?',
+            style: GoogleFonts.fraunces(
+              fontSize: 20,
+              color: mc.inkPrimary,
+              letterSpacing: -0.3,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'This permanently deletes your account, all habits, and all check-in history. There is no undo.',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: mc.inkSecondary,
+              height: 1.5,
+              letterSpacing: -0.1,
+            ),
+          ),
+          const SizedBox(height: 24),
+          InkWell(
+            onTap: () => Navigator.pop(context, true),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                'Delete everything',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: mc.danger,
+                  letterSpacing: -0.1,
+                ),
+              ),
+            ),
+          ),
+          Divider(height: 1, color: mc.hairline),
+          InkWell(
+            onTap: () => Navigator.pop(context, false),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                'Cancel',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: mc.inkPrimary,
+                  letterSpacing: -0.1,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

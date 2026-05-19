@@ -20,6 +20,7 @@ type Config struct {
 	DBMaxIdleConns    int
 	DBConnMaxLifetime time.Duration
 	JWTSecret         string
+	SentryDSN         string
 }
 
 func LoadConfig() *Config {
@@ -44,5 +45,6 @@ func LoadConfig() *Config {
 		DBMaxIdleConns:    viper.GetInt("DB_MAX_IDLE_CONNS"),
 		DBConnMaxLifetime: viper.GetDuration("DB_CONN_MAX_LIFETIME"),
 		JWTSecret:         viper.GetString("JWT_SECRET"),
+		SentryDSN:         viper.GetString("SENTRY_DSN"),
 	}
 }

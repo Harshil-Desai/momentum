@@ -9,6 +9,20 @@ import '../widgets/habit_card.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/offline/offline_status_indicator.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../../core/database/app_database.dart';
+
+// Checks whether any active habit was missed yesterday (no check-in).
+final _missedYesterdayProvider = FutureProvider.autoDispose<bool>((ref) async {
+  final userId = ref.watch(authProvider).valueOrNull?.userId;
+  if (userId == null || userId.isEmpty) return false;
+  final yesterday = DateTime.now().subtract(const Duration(days: 1));
+  final ys = '${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.day.toString().padLeft(2, '0')}';
+  final habits = await AppDatabase.instance.getActiveHabits(userId);
+  if (habits.isEmpty) return false;
+  final checkins = await AppDatabase.instance.getCheckinsForDate(userId, ys);
+  final checkedIds = checkins.map((r) => r['habit_id'] as String).toSet();
+  return habits.any((h) => !checkedIds.contains(h['id'] as String));
+});
 
 class HabitsScreen extends ConsumerStatefulWidget {
   const HabitsScreen({super.key});
@@ -93,6 +107,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
     final todayNorm = DateTime(today.year, today.month, today.day);
     final isPastDay = selectedDate.isBefore(todayNorm);
     final habitsAsync = ref.watch(habitsProvider);
+    final missedYesterday = ref.watch(_missedYesterdayProvider).valueOrNull ?? false;
 
     return AnimatedBuilder(
       animation: _moodAnimation,
@@ -188,6 +203,14 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
                           ),
                         ),
                       ],
+                      // Missed-yesterday banner
+                      if (!isPastDay && missedYesterday) ...[
+                        const SizedBox(height: 6),
+                        _MissedDayBanner(mc: mc, onTap: () {
+                          final yesterday = todayNorm.subtract(const Duration(days: 1));
+                          ref.read(selectedDateProvider.notifier).state = yesterday;
+                        }),
+                      ],
                       const SizedBox(height: 16),
 
                       // ── Section tabs ─────────────────────────────────────
@@ -257,9 +280,10 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
                               children: [
                                 _HabitPage(
                                   habits: building,
-                                  emptyMessage: 'No building habits yet.\nTap + to add one.',
+                                  emptyMessage: 'Nothing to build yet.',
                                   mc: mc,
                                   selectedDate: selectedDate,
+                                  showTemplateCta: true,
                                 ),
                                 _HabitPage(
                                   habits: avoiding,
@@ -374,27 +398,77 @@ class _HabitPage extends ConsumerWidget {
     required this.emptyMessage,
     required this.mc,
     required this.selectedDate,
+    this.showTemplateCta = false,
   });
 
   final List habits;
   final String emptyMessage;
   final CadenceColors mc;
   final DateTime selectedDate;
+  final bool showTemplateCta;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (habits.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-        child: Text(
-          emptyMessage,
-          style: GoogleFonts.fraunces(
-            fontSize: 17,
-            fontStyle: FontStyle.italic,
-            color: mc.inkTertiary,
-            height: 1.5,
-            letterSpacing: -0.2,
-          ),
+        padding: const EdgeInsets.fromLTRB(24, 32, 24, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              emptyMessage,
+              style: GoogleFonts.fraunces(
+                fontSize: 17,
+                fontStyle: FontStyle.italic,
+                color: mc.inkTertiary,
+                height: 1.5,
+                letterSpacing: -0.2,
+              ),
+            ),
+            if (showTemplateCta) ...[
+              const SizedBox(height: 24),
+              GestureDetector(
+                onTap: () => context.push('/templates'),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: mc.inkPrimary,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.auto_awesome_rounded,
+                          size: 16, color: mc.bgCanvas),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Borrow a starter habit',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: mc.bgCanvas,
+                          letterSpacing: -0.1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              GestureDetector(
+                onTap: () => context.push('/habits/new'),
+                child: Text(
+                  'or create your own',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: mc.inkTertiary,
+                    letterSpacing: -0.05,
+                  ),
+                ),
+              ),
+            ],
+          ],
         ),
       );
     }
@@ -721,6 +795,49 @@ class _InkButton extends StatelessWidget {
               fontSize: 16, fontWeight: FontWeight.w500,
               color: mc.bgCanvas, letterSpacing: -0.1,
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Missed-day banner ─────────────────────────────────────────────────────────
+
+class _MissedDayBanner extends StatelessWidget {
+  const _MissedDayBanner({required this.mc, required this.onTap});
+  final CadenceColors mc;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: mc.inkPrimary.withAlpha(10),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: mc.hairlineStrong),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.wb_twilight_rounded, size: 15, color: mc.inkTertiary),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Yesterday slipped by — tap to log it.',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: mc.inkSecondary,
+                    letterSpacing: -0.05,
+                  ),
+                ),
+              ),
+              Icon(Icons.chevron_right_rounded, size: 16, color: mc.inkTertiary),
+            ],
           ),
         ),
       ),

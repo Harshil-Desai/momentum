@@ -145,6 +145,16 @@ class AppDatabase {
 
   // ── Check-ins ────────────────────────────────────────────────────────────
 
+  Future<List<Map<String, dynamic>>> getCheckinsForDate(
+      String userId, String date) async {
+    final database = await db;
+    return database.query(
+      'checkins',
+      where: 'user_id = ? AND date = ?',
+      whereArgs: [userId, date],
+    );
+  }
+
   Future<List<Map<String, dynamic>>> getCheckinsForHabit(
       String habitId) async {
     final database = await db;

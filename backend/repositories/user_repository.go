@@ -115,3 +115,28 @@ func (r *UserRepository) ExistsByEmail(email string) (bool, error) {
 	err := db.Pool.QueryRow(ctx, query, email).Scan(&exists)
 	return exists, err
 }
+
+// DeleteUser deletes a user and all their associated data within a single transaction.
+// Deletion order: checkins, subtasks, grace_days, daily_logs, habits, then the user row.
+func (r *UserRepository) DeleteUser(userID string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	return db.WithTransaction(ctx, func(tx pgx.Tx) error {
+		steps := []string{
+			`DELETE FROM checkins WHERE user_id = $1`,
+			`DELETE FROM habit_subtasks WHERE habit_id IN (SELECT id FROM habits WHERE user_id = $1)`,
+			`DELETE FROM milestones WHERE user_id = $1`,
+			`DELETE FROM grace_days WHERE user_id = $1`,
+			`DELETE FROM daily_logs WHERE user_id = $1`,
+			`DELETE FROM habits WHERE user_id = $1`,
+			`DELETE FROM users WHERE id = $1`,
+		}
+		for _, q := range steps {
+			if _, err := tx.Exec(ctx, q, userID); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+}

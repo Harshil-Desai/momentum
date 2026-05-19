@@ -43,6 +43,9 @@ func SetupRouter(cfg *config.Config) *gin.Engine {
 	authService := services.NewAuthService(userRepo, cfg.JWTSecret)
 	authController := controllers.NewAuthController(authService)
 
+	userService := services.NewUserService(userRepo)
+	userController := controllers.NewUserController(userService)
+
 	habitRepo := repositories.NewHabitRepository()
 	subtaskRepo := repositories.NewSubtaskRepository()
 	templateRepo := repositories.NewTemplateRepository()
@@ -61,9 +64,10 @@ func SetupRouter(cfg *config.Config) *gin.Engine {
 	insightsService := services.NewInsightsService(insightsRepo, habitRepo, dailyLogRepo)
 	insightsController := controllers.NewInsightsController(insightsService)
 
-	// Auth routes (public)
+	// Auth routes (public, rate-limited)
 	api := router.Group("/api")
 	auth := api.Group("/auth")
+	auth.Use(middleware.AuthRateLimit())
 	{
 		auth.POST("/login", authController.Login)
 		auth.POST("/register", authController.Register)
@@ -73,6 +77,7 @@ func SetupRouter(cfg *config.Config) *gin.Engine {
 	protected := api.Group("")
 	protected.Use(middleware.AuthRequired(authService))
 	{
+		protected.DELETE("/users/me", userController.DeleteMe)
 		protected.GET("/insights", insightsController.GetInsights)
 		protected.POST("/daily-log", checkinController.UpsertDailyLog)
 		protected.GET("/daily-log", checkinController.GetDailyLog)

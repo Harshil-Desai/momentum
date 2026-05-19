@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'core/router.dart';
 import 'core/theme/app_theme.dart';
@@ -15,7 +17,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz_data.initializeTimeZones();
   await NotificationService().init();
-  runApp(const ProviderScope(child: CadenceApp()));
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = const String.fromEnvironment(
+        'SENTRY_DSN',
+        defaultValue: '',
+      );
+      options.tracesSampleRate = 0.2;
+    },
+    appRunner: () => runApp(const ProviderScope(child: CadenceApp())),
+  );
 }
 
 class CadenceApp extends ConsumerStatefulWidget {
@@ -27,15 +38,28 @@ class CadenceApp extends ConsumerStatefulWidget {
 
 class _CadenceAppState extends ConsumerState<CadenceApp>
     with WidgetsBindingObserver {
+  StreamSubscription<String>? _notifSub;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _listenConnectivity();
+    _listenNotificationTaps();
+  }
+
+  void _listenNotificationTaps() {
+    _notifSub = NotificationService.onTap.listen((payload) {
+      if (!mounted) return;
+      // Navigate to habits screen; deep-linking to a specific habit detail
+      // requires a loaded Habit object, so we land on the habits list instead.
+      context.go('/habits');
+    });
   }
 
   @override
   void dispose() {
+    _notifSub?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

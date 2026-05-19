@@ -21,10 +21,14 @@ class HabitCard extends ConsumerStatefulWidget {
 }
 
 class _HabitCardState extends ConsumerState<HabitCard>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _streakController;
   late Animation<double> _streakScale;
   int _lastStreak = 0;
+
+  late AnimationController _checkBurstController;
+  late Animation<double> _checkBurstScale;
+  bool _wasChecked = false;
 
   @override
   void initState() {
@@ -36,11 +40,27 @@ class _HabitCardState extends ConsumerState<HabitCard>
     _streakScale = Tween<double>(begin: 1.0, end: 1.18).animate(
       CurvedAnimation(parent: _streakController, curve: Curves.elasticOut),
     );
+
+    _checkBurstController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 380),
+    );
+    _checkBurstScale = TweenSequence<double>([
+      TweenSequenceItem(
+          tween: Tween(begin: 1.0, end: 1.22)
+              .chain(CurveTween(curve: Curves.easeOut)),
+          weight: 40),
+      TweenSequenceItem(
+          tween: Tween(begin: 1.22, end: 1.0)
+              .chain(CurveTween(curve: Curves.elasticOut)),
+          weight: 60),
+    ]).animate(_checkBurstController);
   }
 
   @override
   void dispose() {
     _streakController.dispose();
+    _checkBurstController.dispose();
     super.dispose();
   }
 
@@ -113,13 +133,21 @@ class _HabitCardState extends ConsumerState<HabitCard>
     final checkinState = ref.watch(habitCheckinProvider(habit.id));
     final isLoading = checkinState.isLoading;
 
-    // Pulse animation when streak increases
+    // Streak pulse
     streakAsync.whenData((s) {
       if (s > _lastStreak) {
         _streakController.forward(from: 0);
       }
       _lastStreak = s;
     });
+
+    // Check burst — fire once on transition false → true
+    if (checkedToday && !_wasChecked) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _checkBurstController.forward(from: 0);
+      });
+    }
+    _wasChecked = checkedToday;
 
     return Dismissible(
       key: ValueKey(habit.id),
@@ -268,13 +296,16 @@ class _HabitCardState extends ConsumerState<HabitCard>
                         ),
                       ),
                       const SizedBox(width: 14),
-                      // Check circle
-                      _CheckCircle(
-                        accent: accent,
-                        bgCanvas: mc.bgCanvas,
-                        checked: checkedToday,
-                        loading: isLoading,
-                        onTap: () => _handleCheckin(context),
+                      // Check circle with burst animation on check-in
+                      ScaleTransition(
+                        scale: _checkBurstScale,
+                        child: _CheckCircle(
+                          accent: accent,
+                          bgCanvas: mc.bgCanvas,
+                          checked: checkedToday,
+                          loading: isLoading,
+                          onTap: () => _handleCheckin(context),
+                        ),
                       ),
                     ],
                   ),
