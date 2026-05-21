@@ -208,10 +208,10 @@ func (r *InsightsRepository) GetHabitCorrelations(userID string, lookbackDays in
 		JOIN (
 		  SELECT habit_id, COUNT(*) AS total
 		  FROM checkins
-		  WHERE user_id = $1 AND date >= CURRENT_DATE - $2::int
+		  WHERE user_id = $1 AND date >= CURRENT_DATE - ($2 * INTERVAL '1 day')
 		  GROUP BY habit_id
 		) base ON base.habit_id = a.habit_id
-		WHERE a.user_id = $1 AND a.date >= CURRENT_DATE - $2::int
+		WHERE a.user_id = $1 AND a.date >= CURRENT_DATE - ($2 * INTERVAL '1 day')
 		GROUP BY a.habit_id, ha.name, b.habit_id, hb.name, base.total
 		HAVING ROUND(COUNT(*)::numeric / NULLIF(base.total, 0) * 100, 1) >= 20
 		ORDER BY percentage DESC
