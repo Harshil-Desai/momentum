@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../features/auth/providers/auth_provider.dart';
@@ -10,6 +9,7 @@ import '../features/habits/screens/habits_screen.dart';
 import '../features/habits/screens/habit_detail_screen.dart';
 import '../features/habits/screens/create_habit_screen.dart';
 import '../features/habits/screens/edit_habit_screen.dart';
+import '../features/achievements/screens/achievements_screen.dart';
 import '../features/insights/screens/insights_screen.dart';
 import '../features/settings/screens/settings_screen.dart';
 import '../features/reflection/screens/weekly_reflection_screen.dart';
@@ -31,7 +31,7 @@ GoRouter router(Ref ref) {
       if (authAsync.isLoading) return null;
 
       final isAuthenticated =
-          authAsync.valueOrNull?.isAuthenticated ?? false;
+          authAsync.value?.isAuthenticated ?? false;
       final onPublic = _publicRoutes.contains(state.matchedLocation);
 
       if (!isAuthenticated && !onPublic) return '/login';
@@ -54,6 +54,10 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: '/habits/new',
         builder: (context, state) => const CreateHabitScreen(),
+      ),
+      GoRoute(
+        path: '/achievements',
+        builder: (context, state) => const AchievementsScreen(),
       ),
       GoRoute(
         path: '/insights',

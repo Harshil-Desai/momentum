@@ -359,7 +359,7 @@ class _ThemeSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final current = ref.watch(themeNotifierProvider);
+    final current = ref.watch(themeProvider);
     return SegmentedButton<ThemeMode>(
       segments: const [
         ButtonSegment(
@@ -380,7 +380,7 @@ class _ThemeSelector extends ConsumerWidget {
       ],
       selected: {current},
       onSelectionChanged: (selection) =>
-          ref.read(themeNotifierProvider.notifier).setMode(selection.first),
+          ref.read(themeProvider.notifier).setMode(selection.first),
     );
   }
 }

@@ -73,7 +73,7 @@ class Auth extends _$Auth {
 
   Future<bool> login(String email, String password) async {
     state = AsyncData(
-      state.valueOrNull?.copyWith(isLoading: true, error: null) ??
+      state.value?.copyWith(isLoading: true, error: null) ??
           const AuthState(isLoading: true),
     );
 
@@ -117,7 +117,7 @@ class Auth extends _$Auth {
 
   Future<bool> register(String email, String password, {String? name}) async {
     state = AsyncData(
-      state.valueOrNull?.copyWith(isLoading: true, error: null) ??
+      state.value?.copyWith(isLoading: true, error: null) ??
           const AuthState(isLoading: true),
     );
 

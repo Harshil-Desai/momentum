@@ -7,7 +7,7 @@ class SecureAuthStorage {
   final FlutterSecureStorage _storage;
 
   static const _instance = FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    aOptions: AndroidOptions(),
   );
 
   static SecureAuthStorage get shared => const SecureAuthStorage(_instance);

@@ -72,7 +72,7 @@ class _CadenceAppState extends ConsumerState<CadenceApp>
   }
 
   void _onForeground() {
-    final auth = ref.read(authProvider).valueOrNull;
+    final auth = ref.read(authProvider).value;
     if (auth == null || !auth.isAuthenticated || auth.userId == null) return;
     final sync = SyncService(ref.read(dioProvider));
     unawaited(
@@ -82,8 +82,8 @@ class _CadenceAppState extends ConsumerState<CadenceApp>
 
   void _listenConnectivity() {
     ref.listenManual(connectivityProvider, (_, next) {
-      if (next.valueOrNull == true) {
-        final auth = ref.read(authProvider).valueOrNull;
+      if (next.value == true) {
+        final auth = ref.read(authProvider).value;
         if (auth != null && auth.isAuthenticated) {
           unawaited(ref.read(syncManagerProvider.notifier).flush());
         }
@@ -94,7 +94,7 @@ class _CadenceAppState extends ConsumerState<CadenceApp>
   @override
   Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
-    final themeMode = ref.watch(themeNotifierProvider);
+    final themeMode = ref.watch(themeProvider);
     return MaterialApp.router(
       title: 'Cadence',
       theme: AppTheme.light(),

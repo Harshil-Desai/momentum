@@ -58,7 +58,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
 
     if (created != null && _pendingReminder != null) {
       await ref
-          .read(habitReminderNotifierProvider(created.id).notifier)
+          .read(habitReminderProvider(created.id).notifier)
           .set(created, _pendingReminder!);
       // Permission denied is handled silently here — habit was still created.
     }
@@ -624,7 +624,7 @@ class StackAfterPicker extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final habitsAsync = ref.watch(habitsProvider);
-    final habits = habitsAsync.valueOrNull ?? <Habit>[];
+    final habits = habitsAsync.value ?? <Habit>[];
     final options = habits
         .where((h) => h.id != currentHabitId && !h.isNegative)
         .toList();

@@ -6,37 +6,95 @@ part of 'daily_log_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$todayLogHash() => r'75ba8d781cc42aa2e81c7895a301034b35f0bac2';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [todayLog].
-@ProviderFor(todayLog)
-final todayLogProvider = AutoDisposeFutureProvider<DailyLogData?>.internal(
-  todayLog,
-  name: r'todayLogProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$todayLogHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(DailyLog)
+final dailyLogProvider = DailyLogProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef TodayLogRef = AutoDisposeFutureProviderRef<DailyLogData?>;
+final class DailyLogProvider extends $NotifierProvider<DailyLog, bool> {
+  DailyLogProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'dailyLogProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$dailyLogHash();
+
+  @$internal
+  @override
+  DailyLog create() => DailyLog();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
 String _$dailyLogHash() => r'd36331f33bf506806ead3cb547a9469fef278987';
 
-/// See also [DailyLog].
-@ProviderFor(DailyLog)
-final dailyLogProvider = AutoDisposeNotifierProvider<DailyLog, bool>.internal(
-  DailyLog.new,
-  name: r'dailyLogProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$dailyLogHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$DailyLog extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
 
-typedef _$DailyLog = AutoDisposeNotifier<bool>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+@ProviderFor(todayLog)
+final todayLogProvider = TodayLogProvider._();
+
+final class TodayLogProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<DailyLogData?>,
+          DailyLogData?,
+          FutureOr<DailyLogData?>
+        >
+    with $FutureModifier<DailyLogData?>, $FutureProvider<DailyLogData?> {
+  TodayLogProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'todayLogProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$todayLogHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<DailyLogData?> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<DailyLogData?> create(Ref ref) {
+    return todayLog(ref);
+  }
+}
+
+String _$todayLogHash() => r'75ba8d781cc42aa2e81c7895a301034b35f0bac2';

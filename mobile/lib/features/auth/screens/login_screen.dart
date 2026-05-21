@@ -34,7 +34,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final mc = context.mc;
-    final authState = ref.watch(authProvider).valueOrNull ?? const AuthState();
+    final authState = ref.watch(authProvider).value ?? const AuthState();
 
     return Scaffold(
       backgroundColor: mc.bgCanvas,

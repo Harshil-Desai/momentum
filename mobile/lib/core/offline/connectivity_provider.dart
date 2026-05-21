@@ -1,5 +1,4 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../api_client.dart';
 import 'sync_service.dart';
@@ -32,8 +31,8 @@ class SyncManager extends _$SyncManager {
 
   void _watchConnectivity() {
     ref.listen(connectivityProvider, (prev, next) async {
-      final isOnline = next.valueOrNull ?? false;
-      final wasOffline = !(prev?.valueOrNull ?? true);
+      final isOnline = next.value ?? false;
+      final wasOffline = !(prev?.value ?? true);
       if (isOnline && wasOffline) {
         await flush();
       }

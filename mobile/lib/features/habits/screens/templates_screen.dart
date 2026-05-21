@@ -198,7 +198,7 @@ class _TemplateRowState extends ConsumerState<_TemplateRow> {
 
     if (ok) {
       // Pull the newly adopted habit from server into local DB, then refresh UI.
-      final userId = ref.read(authProvider).valueOrNull?.userId ?? '';
+      final userId = ref.read(authProvider).value?.userId ?? '';
       await SyncService(ref.read(dioProvider)).fullRefresh(userId);
       ref.invalidate(habitsProvider);
       if (!mounted) return;

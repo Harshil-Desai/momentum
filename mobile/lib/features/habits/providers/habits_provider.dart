@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/api_client.dart';
@@ -57,11 +56,11 @@ class Habits extends _$Habits {
   @override
   Future<List<Habit>> build() async {
     ref.keepAlive(); // prevent disposal on route change — no reload flash
-    final userId = ref.watch(authProvider).valueOrNull?.userId;
+    final userId = ref.watch(authProvider).value?.userId;
     if (userId == null || userId.isEmpty) return [];
     // If we already have data (e.g. re-entry after navigation), serve it
     // immediately and let SyncService update in the background.
-    final cached = state.valueOrNull;
+    final cached = state.value;
     if (cached != null) return cached;
     return _loadLocal(userId);
   }
@@ -73,7 +72,7 @@ class Habits extends _$Habits {
 
   Future<void> refresh() async {
     // Never reset to AsyncLoading — update in-place so UI stays responsive.
-    final userId = ref.read(authProvider).valueOrNull?.userId ?? '';
+    final userId = ref.read(authProvider).value?.userId ?? '';
     final fresh = await _loadLocal(userId);
     state = AsyncData(fresh);
   }
@@ -89,7 +88,7 @@ class Habits extends _$Habits {
     HabitFrequency? frequency,
     List<Map<String, dynamic>>? subtasks,
   }) async {
-    final userId = ref.read(authProvider).valueOrNull?.userId ?? '';
+    final userId = ref.read(authProvider).value?.userId ?? '';
     final freq = frequency ?? const HabitFrequency(type: 'daily');
     final now = DateTime.now().millisecondsSinceEpoch;
     final localId = _uuid.v4();
@@ -131,7 +130,7 @@ class Habits extends _$Habits {
     ));
 
     // 2. Optimistically update UI.
-    final current = state.valueOrNull ?? [];
+    final current = state.value ?? [];
     state = AsyncData([...current, habit]);
 
     // 3. Enqueue sync op.
@@ -243,7 +242,7 @@ class Habits extends _$Habits {
     });
 
     // 2. Remove from UI state immediately.
-    final current = state.valueOrNull ?? [];
+    final current = state.value ?? [];
     state = AsyncData(current.where((h) => h.id != habitId).toList());
 
     // 3. Enqueue sync.
@@ -282,7 +281,7 @@ class Habits extends _$Habits {
 class ArchivedHabits extends _$ArchivedHabits {
   @override
   Future<List<Habit>> build() async {
-    final userId = ref.watch(authProvider).valueOrNull?.userId;
+    final userId = ref.watch(authProvider).value?.userId;
     if (userId == null || userId.isEmpty) return [];
     final rows = await AppDatabase.instance.getArchivedHabits(userId);
     return rows.map(_habitFromRow).toList();
@@ -291,7 +290,7 @@ class ArchivedHabits extends _$ArchivedHabits {
   Future<void> refresh() async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      final userId = ref.read(authProvider).valueOrNull?.userId ?? '';
+      final userId = ref.read(authProvider).value?.userId ?? '';
       final rows = await AppDatabase.instance.getArchivedHabits(userId);
       return rows.map(_habitFromRow).toList();
     });
@@ -505,7 +504,7 @@ class HabitCheckin extends _$HabitCheckin {
       return 0;
     }
 
-    final userId = ref.read(authProvider).valueOrNull?.userId ?? '';
+    final userId = ref.read(authProvider).value?.userId ?? '';
     final localId = _uuid.v4();
 
     // 1. Write locally.

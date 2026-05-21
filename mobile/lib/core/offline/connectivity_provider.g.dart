@@ -6,42 +6,99 @@ part of 'connectivity_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$connectivityHash() => r'00f46e4b8fca4a8abfb97cf8f4cc436ee2fcd3cc';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+/// Streams true when connected, false when offline.
+
+@ProviderFor(connectivity)
+final connectivityProvider = ConnectivityProvider._();
 
 /// Streams true when connected, false when offline.
-///
-/// Copied from [connectivity].
-@ProviderFor(connectivity)
-final connectivityProvider = AutoDisposeStreamProvider<bool>.internal(
-  connectivity,
-  name: r'connectivityProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$connectivityHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ConnectivityRef = AutoDisposeStreamProviderRef<bool>;
+final class ConnectivityProvider
+    extends $FunctionalProvider<AsyncValue<bool>, bool, Stream<bool>>
+    with $FutureModifier<bool>, $StreamProvider<bool> {
+  /// Streams true when connected, false when offline.
+  ConnectivityProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'connectivityProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$connectivityHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(pointer);
+
+  @override
+  Stream<bool> create(Ref ref) {
+    return connectivity(ref);
+  }
+}
+
+String _$connectivityHash() => r'00f46e4b8fca4a8abfb97cf8f4cc436ee2fcd3cc';
+
+/// Watches connectivity and flushes the outbox on reconnect.
+
+@ProviderFor(SyncManager)
+final syncManagerProvider = SyncManagerProvider._();
+
+/// Watches connectivity and flushes the outbox on reconnect.
+final class SyncManagerProvider extends $NotifierProvider<SyncManager, int> {
+  /// Watches connectivity and flushes the outbox on reconnect.
+  SyncManagerProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'syncManagerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$syncManagerHash();
+
+  @$internal
+  @override
+  SyncManager create() => SyncManager();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+}
+
 String _$syncManagerHash() => r'adf8185b40fc6b17974d2eb8857fa358ecd5164c';
 
 /// Watches connectivity and flushes the outbox on reconnect.
-///
-/// Copied from [SyncManager].
-@ProviderFor(SyncManager)
-final syncManagerProvider =
-    AutoDisposeNotifierProvider<SyncManager, int>.internal(
-      SyncManager.new,
-      name: r'syncManagerProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$syncManagerHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
 
-typedef _$SyncManager = AutoDisposeNotifier<int>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$SyncManager extends $Notifier<int> {
+  int build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<int, int>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}

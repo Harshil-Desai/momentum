@@ -15,11 +15,12 @@ var ErrGraceDayAlreadyUsed = repositories.ErrGraceDayAlreadyUsed
 var ErrGraceDayNotEligible = errors.New("streak was not at risk — no grace day needed")
 
 type CheckinService struct {
-	checkinRepo     *repositories.CheckinRepository
-	habitRepo       *repositories.HabitRepository
-	milestoneRepo   *repositories.MilestoneRepository
-	graceDayRepo    *repositories.GraceDayRepository
-	dailyLogRepo    *repositories.DailyLogRepository
+	checkinRepo        *repositories.CheckinRepository
+	habitRepo          *repositories.HabitRepository
+	milestoneRepo      *repositories.MilestoneRepository
+	graceDayRepo       *repositories.GraceDayRepository
+	dailyLogRepo       *repositories.DailyLogRepository
+	achievementService *AchievementService
 }
 
 func NewCheckinService(
@@ -28,13 +29,15 @@ func NewCheckinService(
 	milestoneRepo *repositories.MilestoneRepository,
 	graceDayRepo *repositories.GraceDayRepository,
 	dailyLogRepo *repositories.DailyLogRepository,
+	achievementService *AchievementService,
 ) *CheckinService {
 	return &CheckinService{
-		checkinRepo:   checkinRepo,
-		habitRepo:     habitRepo,
-		milestoneRepo: milestoneRepo,
-		graceDayRepo:  graceDayRepo,
-		dailyLogRepo:  dailyLogRepo,
+		checkinRepo:        checkinRepo,
+		habitRepo:          habitRepo,
+		milestoneRepo:      milestoneRepo,
+		graceDayRepo:       graceDayRepo,
+		dailyLogRepo:       dailyLogRepo,
+		achievementService: achievementService,
 	}
 }
 
@@ -51,24 +54,24 @@ func (s *CheckinService) DeleteTodayCheckin(userID, habitID string) error {
 }
 
 // LogCheckin records a check-in and returns the checkin, whether it was newly
-// created, and any milestone value just reached (0 = none).
-func (s *CheckinService) LogCheckin(userID, habitID, dateStr string) (*models.Checkin, bool, int, error) {
+// created, any milestone value just reached (0 = none), and newly earned achievement IDs.
+func (s *CheckinService) LogCheckin(userID, habitID, dateStr string) (*models.Checkin, bool, int, []string, error) {
 	habit, err := s.habitRepo.FindByID(habitID, userID)
 	if err != nil {
-		return nil, false, 0, fmt.Errorf("finding habit: %w", err)
+		return nil, false, 0, nil, fmt.Errorf("finding habit: %w", err)
 	}
 	if habit == nil {
-		return nil, false, 0, ErrCheckinHabitNotFound
+		return nil, false, 0, nil, ErrCheckinHabitNotFound
 	}
 
 	date, err := time.Parse("2006-01-02", dateStr)
 	if err != nil {
-		return nil, false, 0, fmt.Errorf("invalid date format, expected YYYY-MM-DD")
+		return nil, false, 0, nil, fmt.Errorf("invalid date format, expected YYYY-MM-DD")
 	}
 
 	today := time.Now().UTC().Truncate(24 * time.Hour)
 	if date.After(today) {
-		return nil, false, 0, ErrFutureDate
+		return nil, false, 0, nil, ErrFutureDate
 	}
 
 	checkin := &models.Checkin{
@@ -79,7 +82,7 @@ func (s *CheckinService) LogCheckin(userID, habitID, dateStr string) (*models.Ch
 
 	created, err := s.checkinRepo.Create(checkin)
 	if err != nil {
-		return nil, false, 0, fmt.Errorf("logging checkin: %w", err)
+		return nil, false, 0, nil, fmt.Errorf("logging checkin: %w", err)
 	}
 
 	var milestoneReached int
@@ -90,7 +93,12 @@ func (s *CheckinService) LogCheckin(userID, habitID, dateStr string) (*models.Ch
 		}
 	}
 
-	return checkin, created, milestoneReached, nil
+	var newlyEarned []string
+	if created {
+		newlyEarned, _ = s.achievementService.EvaluateCheckin(userID, checkin.CreatedAt)
+	}
+
+	return checkin, created, milestoneReached, newlyEarned, nil
 }
 
 // ClaimGraceDay protects yesterday's missed date for a habit. Returns an error

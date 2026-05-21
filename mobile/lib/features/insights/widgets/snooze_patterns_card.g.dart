@@ -6,23 +6,46 @@ part of 'snooze_patterns_card.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$snoozeInsightsHash() => r'3408d1e3ea4c2bb08a41f3a551eec879112ad227';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [snoozeInsights].
 @ProviderFor(snoozeInsights)
-final snoozeInsightsProvider =
-    AutoDisposeFutureProvider<List<SnoozeInsight>>.internal(
-      snoozeInsights,
-      name: r'snoozeInsightsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$snoozeInsightsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+final snoozeInsightsProvider = SnoozeInsightsProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SnoozeInsightsRef = AutoDisposeFutureProviderRef<List<SnoozeInsight>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class SnoozeInsightsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<SnoozeInsight>>,
+          List<SnoozeInsight>,
+          FutureOr<List<SnoozeInsight>>
+        >
+    with
+        $FutureModifier<List<SnoozeInsight>>,
+        $FutureProvider<List<SnoozeInsight>> {
+  SnoozeInsightsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'snoozeInsightsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$snoozeInsightsHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<SnoozeInsight>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<SnoozeInsight>> create(Ref ref) {
+    return snoozeInsights(ref);
+  }
+}
+
+String _$snoozeInsightsHash() => r'3408d1e3ea4c2bb08a41f3a551eec879112ad227';

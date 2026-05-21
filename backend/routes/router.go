@@ -56,8 +56,12 @@ func SetupRouter(cfg *config.Config) *gin.Engine {
 	graceDayRepo := repositories.NewGraceDayRepository()
 	dailyLogRepo := repositories.NewDailyLogRepository()
 
+	achievementRepo := repositories.NewAchievementRepository()
+	achievementService := services.NewAchievementService(achievementRepo)
+	achievementController := controllers.NewAchievementController(achievementService)
+
 	checkinRepo := repositories.NewCheckinRepository()
-	checkinService := services.NewCheckinService(checkinRepo, habitRepo, milestoneRepo, graceDayRepo, dailyLogRepo)
+	checkinService := services.NewCheckinService(checkinRepo, habitRepo, milestoneRepo, graceDayRepo, dailyLogRepo, achievementService)
 	checkinController := controllers.NewCheckinController(checkinService)
 
 	insightsRepo := repositories.NewInsightsRepository()
@@ -78,6 +82,7 @@ func SetupRouter(cfg *config.Config) *gin.Engine {
 	protected.Use(middleware.AuthRequired(authService))
 	{
 		protected.DELETE("/users/me", userController.DeleteMe)
+		protected.GET("/achievements", achievementController.GetAchievements)
 		protected.GET("/insights", insightsController.GetInsights)
 		protected.POST("/daily-log", checkinController.UpsertDailyLog)
 		protected.GET("/daily-log", checkinController.GetDailyLog)

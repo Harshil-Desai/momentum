@@ -75,7 +75,7 @@ class _HabitCardState extends ConsumerState<HabitCard>
   Future<void> _handleCheckin(BuildContext context) async {
     HapticFeedback.lightImpact();
     final dateStr = _selectedDateStr;
-    final historyData = ref.read(habitHistoryDataProvider(widget.habit.id)).valueOrNull;
+    final historyData = ref.read(habitHistoryDataProvider(widget.habit.id)).value;
     final alreadyChecked = dateStr != null
         ? (historyData?.dates.contains(dateStr) ?? false)
         : (historyData?.checkedToday ?? false);
@@ -154,7 +154,7 @@ class _HabitCardState extends ConsumerState<HabitCard>
       direction: DismissDirection.endToStart,
       confirmDismiss: (_) async {
         final historyData =
-            ref.read(habitHistoryDataProvider(habit.id)).valueOrNull;
+            ref.read(habitHistoryDataProvider(habit.id)).value;
         final count = historyData?.lifetimeCount ?? 0;
         final eulogyLine = count > 0
             ? 'You showed up for this $count time${count == 1 ? '' : 's'}. That counts.'

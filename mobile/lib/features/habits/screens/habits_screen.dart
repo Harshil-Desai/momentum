@@ -13,7 +13,7 @@ import '../../../core/database/app_database.dart';
 
 // Checks whether any active habit was missed yesterday (no check-in).
 final _missedYesterdayProvider = FutureProvider.autoDispose<bool>((ref) async {
-  final userId = ref.watch(authProvider).valueOrNull?.userId;
+  final userId = ref.watch(authProvider).value?.userId;
   if (userId == null || userId.isEmpty) return false;
   final yesterday = DateTime.now().subtract(const Duration(days: 1));
   final ys = '${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.day.toString().padLeft(2, '0')}';
@@ -94,7 +94,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
       ),
     );
     if (picked != null && mounted) {
-      ref.read(selectedDateProvider.notifier).state = picked;
+      ref.read(selectedDateProvider.notifier).set(picked);
     }
   }
 
@@ -107,7 +107,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
     final todayNorm = DateTime(today.year, today.month, today.day);
     final isPastDay = selectedDate.isBefore(todayNorm);
     final habitsAsync = ref.watch(habitsProvider);
-    final missedYesterday = ref.watch(_missedYesterdayProvider).valueOrNull ?? false;
+    final missedYesterday = ref.watch(_missedYesterdayProvider).value ?? false;
 
     return AnimatedBuilder(
       animation: _moodAnimation,
@@ -208,7 +208,7 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
                         const SizedBox(height: 6),
                         _MissedDayBanner(mc: mc, onTap: () {
                           final yesterday = todayNorm.subtract(const Duration(days: 1));
-                          ref.read(selectedDateProvider.notifier).state = yesterday;
+                          ref.read(selectedDateProvider.notifier).set(yesterday);
                         }),
                       ],
                       const SizedBox(height: 16),
@@ -311,6 +311,10 @@ class _HabitsScreenState extends ConsumerState<HabitsScreen>
                 if (_profileOpen)
                   _ProfileSheet(
                     onClose: () => setState(() => _profileOpen = false),
+                    onAchievements: () {
+                      setState(() => _profileOpen = false);
+                      context.push('/achievements');
+                    },
                     onInsights: () {
                       setState(() => _profileOpen = false);
                       context.push('/insights');
@@ -505,7 +509,7 @@ class _ProgressLine extends ConsumerWidget {
 
     int waiting = 0;
     for (final h in habits) {
-      final history = ref.watch(habitHistoryDataProvider(h.id)).valueOrNull;
+      final history = ref.watch(habitHistoryDataProvider(h.id)).value;
       final checked = history != null && history.dates.contains(dateStr);
       if (!checked) waiting++;
     }
@@ -553,7 +557,7 @@ class _AvatarButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mc = context.mc;
-    final auth = ref.watch(authProvider).valueOrNull;
+    final auth = ref.watch(authProvider).value;
     final initial = _initials(auth?.name, auth?.email);
     return GestureDetector(
       onTap: onTap,
@@ -582,6 +586,7 @@ class _AvatarButton extends ConsumerWidget {
 class _ProfileSheet extends StatelessWidget {
   const _ProfileSheet({
     required this.onClose,
+    required this.onAchievements,
     required this.onInsights,
     required this.onReflection,
     required this.onTemplates,
@@ -590,6 +595,7 @@ class _ProfileSheet extends StatelessWidget {
   });
 
   final VoidCallback onClose;
+  final VoidCallback onAchievements;
   final VoidCallback onInsights;
   final VoidCallback onReflection;
   final VoidCallback onTemplates;
@@ -629,6 +635,7 @@ class _ProfileSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
+                _SheetRow(label: 'Achievements', onTap: onAchievements),
                 _SheetRow(label: 'Your patterns', onTap: onInsights),
                 _SheetRow(label: 'This week', onTap: onReflection),
                 _SheetRow(label: 'Borrow a starter habit', onTap: onTemplates),

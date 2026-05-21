@@ -35,7 +35,7 @@ class NotificationService {
     );
 
     await _plugin.initialize(
-      const InitializationSettings(
+      settings: const InitializationSettings(
           android: androidSettings, iOS: iosSettings),
       onDidReceiveNotificationResponse: _onNotificationResponse,
       onDidReceiveBackgroundNotificationResponse: _onNotificationResponse,
@@ -76,7 +76,6 @@ class NotificationService {
   }
 
   /// Schedules a daily reminder for a habit at [hour]:[minute] local time.
-  /// [habitId] is used as the notification ID (hashed to int).
   Future<void> scheduleHabitReminder({
     required String habitId,
     required String habitName,
@@ -115,28 +114,26 @@ class NotificationService {
     );
 
     await _plugin.zonedSchedule(
-      id,
-      title,
-      'Time to check in',
-      scheduled,
-      const NotificationDetails(
+      id: id,
+      title: title,
+      body: 'Time to check in',
+      scheduledDate: scheduled,
+      notificationDetails: const NotificationDetails(
           android: androidDetails, iOS: iosDetails),
       payload: habitId,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }
 
   Future<void> cancelReminder(String habitId) async {
     await init();
-    await _plugin.cancel(_notifId(habitId));
+    await _plugin.cancel(id: _notifId(habitId));
   }
 
   Future<void> snooze(String habitId, Duration duration) async {
     await init();
-    await _plugin.cancel(_notifId(habitId));
+    await _plugin.cancel(id: _notifId(habitId));
     final id = _notifId(habitId);
     final scheduled = tz.TZDateTime.now(tz.local).add(duration);
 
@@ -149,14 +146,12 @@ class NotificationService {
     );
 
     await _plugin.zonedSchedule(
-      id,
-      'Habit reminder',
-      'You snoozed this — time to check in',
-      scheduled,
-      const NotificationDetails(android: androidDetails),
+      id: id,
+      title: 'Habit reminder',
+      body: 'You snoozed this — time to check in',
+      scheduledDate: scheduled,
+      notificationDetails: const NotificationDetails(android: androidDetails),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 

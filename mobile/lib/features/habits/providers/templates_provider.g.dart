@@ -6,25 +6,59 @@ part of 'templates_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(Templates)
+final templatesProvider = TemplatesProvider._();
+
+final class TemplatesProvider
+    extends
+        $AsyncNotifierProvider<Templates, Map<String, List<HabitTemplate>>> {
+  TemplatesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'templatesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$templatesHash();
+
+  @$internal
+  @override
+  Templates create() => Templates();
+}
+
 String _$templatesHash() => r'cba606834ae606774e3a8692d9708e857a46acf1';
 
-/// See also [Templates].
-@ProviderFor(Templates)
-final templatesProvider =
-    AutoDisposeAsyncNotifierProvider<
-      Templates,
-      Map<String, List<HabitTemplate>>
-    >.internal(
-      Templates.new,
-      name: r'templatesProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$templatesHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$Templates =
-    AutoDisposeAsyncNotifier<Map<String, List<HabitTemplate>>>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$Templates
+    extends $AsyncNotifier<Map<String, List<HabitTemplate>>> {
+  FutureOr<Map<String, List<HabitTemplate>>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref =
+        this.ref
+            as $Ref<
+              AsyncValue<Map<String, List<HabitTemplate>>>,
+              Map<String, List<HabitTemplate>>
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<Map<String, List<HabitTemplate>>>,
+                Map<String, List<HabitTemplate>>
+              >,
+              AsyncValue<Map<String, List<HabitTemplate>>>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}

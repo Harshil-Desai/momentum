@@ -31,7 +31,7 @@ func (cc *CheckinController) LogCheckin(c *gin.Context) {
 		return
 	}
 
-	checkin, created, milestone, err := cc.checkinService.LogCheckin(userID, habitID, req.Date)
+	checkin, created, milestone, newlyEarned, err := cc.checkinService.LogCheckin(userID, habitID, req.Date)
 	if err != nil {
 		switch {
 		case errors.Is(err, services.ErrFutureDate):
@@ -52,6 +52,10 @@ func (cc *CheckinController) LogCheckin(c *gin.Context) {
 	status := http.StatusOK
 	if created {
 		status = http.StatusCreated
+	}
+	if len(newlyEarned) > 0 {
+		c.JSON(status, gin.H{"checkin": resp, "newly_earned_achievements": newlyEarned})
+		return
 	}
 	c.JSON(status, resp)
 }

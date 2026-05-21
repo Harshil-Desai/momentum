@@ -6,716 +6,555 @@ part of 'habits_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$habitsHash() => r'09446dba22a6aaee39795a241e092dac5b26412c';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [Habits].
 @ProviderFor(Habits)
-final habitsProvider =
-    AutoDisposeAsyncNotifierProvider<Habits, List<Habit>>.internal(
-      Habits.new,
-      name: r'habitsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$habitsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+final habitsProvider = HabitsProvider._();
 
-typedef _$Habits = AutoDisposeAsyncNotifier<List<Habit>>;
-String _$archivedHabitsHash() => r'f7389bb4bce4a3ec0ce385bb485f921be71f0fb2';
-
-/// See also [ArchivedHabits].
-@ProviderFor(ArchivedHabits)
-final archivedHabitsProvider =
-    AutoDisposeAsyncNotifierProvider<ArchivedHabits, List<Habit>>.internal(
-      ArchivedHabits.new,
-      name: r'archivedHabitsProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$archivedHabitsHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$ArchivedHabits = AutoDisposeAsyncNotifier<List<Habit>>;
-String _$habitHistoryDataHash() => r'3f9f76cd987a477001e20119105fc48f45f28c23';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$HabitHistoryData
-    extends BuildlessAutoDisposeAsyncNotifier<HabitHistory> {
-  late final String habitId;
-
-  FutureOr<HabitHistory> build(String habitId);
-}
-
-/// See also [HabitHistoryData].
-@ProviderFor(HabitHistoryData)
-const habitHistoryDataProvider = HabitHistoryDataFamily();
-
-/// See also [HabitHistoryData].
-class HabitHistoryDataFamily extends Family<AsyncValue<HabitHistory>> {
-  /// See also [HabitHistoryData].
-  const HabitHistoryDataFamily();
-
-  /// See also [HabitHistoryData].
-  HabitHistoryDataProvider call(String habitId) {
-    return HabitHistoryDataProvider(habitId);
-  }
-
-  @override
-  HabitHistoryDataProvider getProviderOverride(
-    covariant HabitHistoryDataProvider provider,
-  ) {
-    return call(provider.habitId);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'habitHistoryDataProvider';
-}
-
-/// See also [HabitHistoryData].
-class HabitHistoryDataProvider
-    extends
-        AutoDisposeAsyncNotifierProviderImpl<HabitHistoryData, HabitHistory> {
-  /// See also [HabitHistoryData].
-  HabitHistoryDataProvider(String habitId)
-    : this._internal(
-        () => HabitHistoryData()..habitId = habitId,
-        from: habitHistoryDataProvider,
-        name: r'habitHistoryDataProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$habitHistoryDataHash,
-        dependencies: HabitHistoryDataFamily._dependencies,
-        allTransitiveDependencies:
-            HabitHistoryDataFamily._allTransitiveDependencies,
-        habitId: habitId,
+final class HabitsProvider extends $AsyncNotifierProvider<Habits, List<Habit>> {
+  HabitsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'habitsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
       );
 
-  HabitHistoryDataProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.habitId,
-  }) : super.internal();
-
-  final String habitId;
-
   @override
-  FutureOr<HabitHistory> runNotifierBuild(covariant HabitHistoryData notifier) {
-    return notifier.build(habitId);
+  String debugGetCreateSourceHash() => _$habitsHash();
+
+  @$internal
+  @override
+  Habits create() => Habits();
+}
+
+String _$habitsHash() => r'09446dba22a6aaee39795a241e092dac5b26412c';
+
+abstract class _$Habits extends $AsyncNotifier<List<Habit>> {
+  FutureOr<List<Habit>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<List<Habit>>, List<Habit>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<List<Habit>>, List<Habit>>,
+              AsyncValue<List<Habit>>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
   }
+}
 
-  @override
-  Override overrideWith(HabitHistoryData Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: HabitHistoryDataProvider._internal(
-        () => create()..habitId = habitId,
-        from: from,
-        name: null,
+@ProviderFor(ArchivedHabits)
+final archivedHabitsProvider = ArchivedHabitsProvider._();
+
+final class ArchivedHabitsProvider
+    extends $AsyncNotifierProvider<ArchivedHabits, List<Habit>> {
+  ArchivedHabitsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'archivedHabitsProvider',
+        isAutoDispose: true,
         dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        habitId: habitId,
-      ),
-    );
-  }
+        $allTransitiveDependencies: null,
+      );
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<HabitHistoryData, HabitHistory>
-  createElement() {
-    return _HabitHistoryDataProviderElement(this);
+  String debugGetCreateSourceHash() => _$archivedHabitsHash();
+
+  @$internal
+  @override
+  ArchivedHabits create() => ArchivedHabits();
+}
+
+String _$archivedHabitsHash() => r'f7389bb4bce4a3ec0ce385bb485f921be71f0fb2';
+
+abstract class _$ArchivedHabits extends $AsyncNotifier<List<Habit>> {
+  FutureOr<List<Habit>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<List<Habit>>, List<Habit>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<List<Habit>>, List<Habit>>,
+              AsyncValue<List<Habit>>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
   }
+}
+
+@ProviderFor(HabitHistoryData)
+final habitHistoryDataProvider = HabitHistoryDataFamily._();
+
+final class HabitHistoryDataProvider
+    extends $AsyncNotifierProvider<HabitHistoryData, HabitHistory> {
+  HabitHistoryDataProvider._({
+    required HabitHistoryDataFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'habitHistoryDataProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$habitHistoryDataHash();
+
+  @override
+  String toString() {
+    return r'habitHistoryDataProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  HabitHistoryData create() => HabitHistoryData();
 
   @override
   bool operator ==(Object other) {
-    return other is HabitHistoryDataProvider && other.habitId == habitId;
+    return other is HabitHistoryDataProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, habitId.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin HabitHistoryDataRef on AutoDisposeAsyncNotifierProviderRef<HabitHistory> {
-  /// The parameter `habitId` of this provider.
-  String get habitId;
-}
+String _$habitHistoryDataHash() => r'd88d16458e68fb7fade6d1db3435de5d601f60fc';
 
-class _HabitHistoryDataProviderElement
-    extends
-        AutoDisposeAsyncNotifierProviderElement<HabitHistoryData, HabitHistory>
-    with HabitHistoryDataRef {
-  _HabitHistoryDataProviderElement(super.provider);
+final class HabitHistoryDataFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          HabitHistoryData,
+          AsyncValue<HabitHistory>,
+          HabitHistory,
+          FutureOr<HabitHistory>,
+          String
+        > {
+  HabitHistoryDataFamily._()
+    : super(
+        retry: null,
+        name: r'habitHistoryDataProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  HabitHistoryDataProvider call(String habitId) =>
+      HabitHistoryDataProvider._(argument: habitId, from: this);
 
   @override
-  String get habitId => (origin as HabitHistoryDataProvider).habitId;
+  String toString() => r'habitHistoryDataProvider';
+}
+
+abstract class _$HabitHistoryData extends $AsyncNotifier<HabitHistory> {
+  late final _$args = ref.$arg as String;
+  String get habitId => _$args;
+
+  FutureOr<HabitHistory> build(String habitId);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<HabitHistory>, HabitHistory>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<HabitHistory>, HabitHistory>,
+              AsyncValue<HabitHistory>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
+  }
+}
+
+@ProviderFor(HabitStreak)
+final habitStreakProvider = HabitStreakFamily._();
+
+final class HabitStreakProvider
+    extends $AsyncNotifierProvider<HabitStreak, int> {
+  HabitStreakProvider._({
+    required HabitStreakFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'habitStreakProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$habitStreakHash();
+
+  @override
+  String toString() {
+    return r'habitStreakProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  HabitStreak create() => HabitStreak();
+
+  @override
+  bool operator ==(Object other) {
+    return other is HabitStreakProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$habitStreakHash() => r'4344b9d1176235cb89c846f333d702ca74e27919';
 
-abstract class _$HabitStreak extends BuildlessAutoDisposeAsyncNotifier<int> {
-  late final String habitId;
+final class HabitStreakFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          HabitStreak,
+          AsyncValue<int>,
+          int,
+          FutureOr<int>,
+          String
+        > {
+  HabitStreakFamily._()
+    : super(
+        retry: null,
+        name: r'habitStreakProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  HabitStreakProvider call(String habitId) =>
+      HabitStreakProvider._(argument: habitId, from: this);
+
+  @override
+  String toString() => r'habitStreakProvider';
+}
+
+abstract class _$HabitStreak extends $AsyncNotifier<int> {
+  late final _$args = ref.$arg as String;
+  String get habitId => _$args;
 
   FutureOr<int> build(String habitId);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<int>, int>,
+              AsyncValue<int>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
+  }
 }
 
-/// See also [HabitStreak].
-@ProviderFor(HabitStreak)
-const habitStreakProvider = HabitStreakFamily();
+@ProviderFor(HabitCheckin)
+final habitCheckinProvider = HabitCheckinFamily._();
 
-/// See also [HabitStreak].
-class HabitStreakFamily extends Family<AsyncValue<int>> {
-  /// See also [HabitStreak].
-  const HabitStreakFamily();
+final class HabitCheckinProvider
+    extends $NotifierProvider<HabitCheckin, CheckinState> {
+  HabitCheckinProvider._({
+    required HabitCheckinFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'habitCheckinProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
-  /// See also [HabitStreak].
-  HabitStreakProvider call(String habitId) {
-    return HabitStreakProvider(habitId);
+  @override
+  String debugGetCreateSourceHash() => _$habitCheckinHash();
+
+  @override
+  String toString() {
+    return r'habitCheckinProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  HabitStreakProvider getProviderOverride(
-    covariant HabitStreakProvider provider,
-  ) {
-    return call(provider.habitId);
-  }
+  HabitCheckin create() => HabitCheckin();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'habitStreakProvider';
-}
-
-/// See also [HabitStreak].
-class HabitStreakProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<HabitStreak, int> {
-  /// See also [HabitStreak].
-  HabitStreakProvider(String habitId)
-    : this._internal(
-        () => HabitStreak()..habitId = habitId,
-        from: habitStreakProvider,
-        name: r'habitStreakProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$habitStreakHash,
-        dependencies: HabitStreakFamily._dependencies,
-        allTransitiveDependencies: HabitStreakFamily._allTransitiveDependencies,
-        habitId: habitId,
-      );
-
-  HabitStreakProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.habitId,
-  }) : super.internal();
-
-  final String habitId;
-
-  @override
-  FutureOr<int> runNotifierBuild(covariant HabitStreak notifier) {
-    return notifier.build(habitId);
-  }
-
-  @override
-  Override overrideWith(HabitStreak Function() create) {
-    return ProviderOverride(
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CheckinState value) {
+    return $ProviderOverride(
       origin: this,
-      override: HabitStreakProvider._internal(
-        () => create()..habitId = habitId,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        habitId: habitId,
-      ),
+      providerOverride: $SyncValueProvider<CheckinState>(value),
     );
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<HabitStreak, int> createElement() {
-    return _HabitStreakProviderElement(this);
-  }
-
-  @override
   bool operator ==(Object other) {
-    return other is HabitStreakProvider && other.habitId == habitId;
+    return other is HabitCheckinProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, habitId.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin HabitStreakRef on AutoDisposeAsyncNotifierProviderRef<int> {
-  /// The parameter `habitId` of this provider.
-  String get habitId;
-}
+String _$habitCheckinHash() => r'7341a4fd7bca0a7c58355cc18afcd056b8dd94af';
 
-class _HabitStreakProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<HabitStreak, int>
-    with HabitStreakRef {
-  _HabitStreakProviderElement(super.provider);
+final class HabitCheckinFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          HabitCheckin,
+          CheckinState,
+          CheckinState,
+          CheckinState,
+          String
+        > {
+  HabitCheckinFamily._()
+    : super(
+        retry: null,
+        name: r'habitCheckinProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  HabitCheckinProvider call(String habitId) =>
+      HabitCheckinProvider._(argument: habitId, from: this);
 
   @override
-  String get habitId => (origin as HabitStreakProvider).habitId;
+  String toString() => r'habitCheckinProvider';
 }
 
-String _$habitCheckinHash() => r'6075ab4833511a40aae5c3ae8116fe539389f218';
-
-abstract class _$HabitCheckin
-    extends BuildlessAutoDisposeNotifier<CheckinState> {
-  late final String habitId;
+abstract class _$HabitCheckin extends $Notifier<CheckinState> {
+  late final _$args = ref.$arg as String;
+  String get habitId => _$args;
 
   CheckinState build(String habitId);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<CheckinState, CheckinState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<CheckinState, CheckinState>,
+              CheckinState,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
+  }
 }
 
-/// See also [HabitCheckin].
-@ProviderFor(HabitCheckin)
-const habitCheckinProvider = HabitCheckinFamily();
+@ProviderFor(HabitGraceDay)
+final habitGraceDayProvider = HabitGraceDayFamily._();
 
-/// See also [HabitCheckin].
-class HabitCheckinFamily extends Family<CheckinState> {
-  /// See also [HabitCheckin].
-  const HabitCheckinFamily();
+final class HabitGraceDayProvider
+    extends $NotifierProvider<HabitGraceDay, bool> {
+  HabitGraceDayProvider._({
+    required HabitGraceDayFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'habitGraceDayProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
-  /// See also [HabitCheckin].
-  HabitCheckinProvider call(String habitId) {
-    return HabitCheckinProvider(habitId);
+  @override
+  String debugGetCreateSourceHash() => _$habitGraceDayHash();
+
+  @override
+  String toString() {
+    return r'habitGraceDayProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  HabitCheckinProvider getProviderOverride(
-    covariant HabitCheckinProvider provider,
-  ) {
-    return call(provider.habitId);
-  }
+  HabitGraceDay create() => HabitGraceDay();
 
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'habitCheckinProvider';
-}
-
-/// See also [HabitCheckin].
-class HabitCheckinProvider
-    extends AutoDisposeNotifierProviderImpl<HabitCheckin, CheckinState> {
-  /// See also [HabitCheckin].
-  HabitCheckinProvider(String habitId)
-    : this._internal(
-        () => HabitCheckin()..habitId = habitId,
-        from: habitCheckinProvider,
-        name: r'habitCheckinProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$habitCheckinHash,
-        dependencies: HabitCheckinFamily._dependencies,
-        allTransitiveDependencies:
-            HabitCheckinFamily._allTransitiveDependencies,
-        habitId: habitId,
-      );
-
-  HabitCheckinProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.habitId,
-  }) : super.internal();
-
-  final String habitId;
-
-  @override
-  CheckinState runNotifierBuild(covariant HabitCheckin notifier) {
-    return notifier.build(habitId);
-  }
-
-  @override
-  Override overrideWith(HabitCheckin Function() create) {
-    return ProviderOverride(
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
       origin: this,
-      override: HabitCheckinProvider._internal(
-        () => create()..habitId = habitId,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        habitId: habitId,
-      ),
+      providerOverride: $SyncValueProvider<bool>(value),
     );
   }
 
   @override
-  AutoDisposeNotifierProviderElement<HabitCheckin, CheckinState>
-  createElement() {
-    return _HabitCheckinProviderElement(this);
-  }
-
-  @override
   bool operator ==(Object other) {
-    return other is HabitCheckinProvider && other.habitId == habitId;
+    return other is HabitGraceDayProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, habitId.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin HabitCheckinRef on AutoDisposeNotifierProviderRef<CheckinState> {
-  /// The parameter `habitId` of this provider.
-  String get habitId;
-}
-
-class _HabitCheckinProviderElement
-    extends AutoDisposeNotifierProviderElement<HabitCheckin, CheckinState>
-    with HabitCheckinRef {
-  _HabitCheckinProviderElement(super.provider);
-
-  @override
-  String get habitId => (origin as HabitCheckinProvider).habitId;
 }
 
 String _$habitGraceDayHash() => r'0e62ca886978f6d6e8b4d8f0f0d97eca79cb8943';
 
-abstract class _$HabitGraceDay extends BuildlessAutoDisposeNotifier<bool> {
-  late final String habitId;
-
-  bool build(String habitId);
-}
-
-/// See also [HabitGraceDay].
-@ProviderFor(HabitGraceDay)
-const habitGraceDayProvider = HabitGraceDayFamily();
-
-/// See also [HabitGraceDay].
-class HabitGraceDayFamily extends Family<bool> {
-  /// See also [HabitGraceDay].
-  const HabitGraceDayFamily();
-
-  /// See also [HabitGraceDay].
-  HabitGraceDayProvider call(String habitId) {
-    return HabitGraceDayProvider(habitId);
-  }
-
-  @override
-  HabitGraceDayProvider getProviderOverride(
-    covariant HabitGraceDayProvider provider,
-  ) {
-    return call(provider.habitId);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'habitGraceDayProvider';
-}
-
-/// See also [HabitGraceDay].
-class HabitGraceDayProvider
-    extends AutoDisposeNotifierProviderImpl<HabitGraceDay, bool> {
-  /// See also [HabitGraceDay].
-  HabitGraceDayProvider(String habitId)
-    : this._internal(
-        () => HabitGraceDay()..habitId = habitId,
-        from: habitGraceDayProvider,
+final class HabitGraceDayFamily extends $Family
+    with $ClassFamilyOverride<HabitGraceDay, bool, bool, bool, String> {
+  HabitGraceDayFamily._()
+    : super(
+        retry: null,
         name: r'habitGraceDayProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$habitGraceDayHash,
-        dependencies: HabitGraceDayFamily._dependencies,
-        allTransitiveDependencies:
-            HabitGraceDayFamily._allTransitiveDependencies,
-        habitId: habitId,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
       );
 
-  HabitGraceDayProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.habitId,
-  }) : super.internal();
-
-  final String habitId;
+  HabitGraceDayProvider call(String habitId) =>
+      HabitGraceDayProvider._(argument: habitId, from: this);
 
   @override
-  bool runNotifierBuild(covariant HabitGraceDay notifier) {
-    return notifier.build(habitId);
+  String toString() => r'habitGraceDayProvider';
+}
+
+abstract class _$HabitGraceDay extends $Notifier<bool> {
+  late final _$args = ref.$arg as String;
+  String get habitId => _$args;
+
+  bool build(String habitId);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
+  }
+}
+
+@ProviderFor(HabitSubtaskCheckin)
+final habitSubtaskCheckinProvider = HabitSubtaskCheckinFamily._();
+
+final class HabitSubtaskCheckinProvider
+    extends $NotifierProvider<HabitSubtaskCheckin, Set<String>> {
+  HabitSubtaskCheckinProvider._({
+    required HabitSubtaskCheckinFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'habitSubtaskCheckinProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$habitSubtaskCheckinHash();
+
+  @override
+  String toString() {
+    return r'habitSubtaskCheckinProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  Override overrideWith(HabitGraceDay Function() create) {
-    return ProviderOverride(
+  HabitSubtaskCheckin create() => HabitSubtaskCheckin();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Set<String> value) {
+    return $ProviderOverride(
       origin: this,
-      override: HabitGraceDayProvider._internal(
-        () => create()..habitId = habitId,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        habitId: habitId,
-      ),
+      providerOverride: $SyncValueProvider<Set<String>>(value),
     );
   }
 
   @override
-  AutoDisposeNotifierProviderElement<HabitGraceDay, bool> createElement() {
-    return _HabitGraceDayProviderElement(this);
-  }
-
-  @override
   bool operator ==(Object other) {
-    return other is HabitGraceDayProvider && other.habitId == habitId;
+    return other is HabitSubtaskCheckinProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, habitId.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin HabitGraceDayRef on AutoDisposeNotifierProviderRef<bool> {
-  /// The parameter `habitId` of this provider.
-  String get habitId;
-}
-
-class _HabitGraceDayProviderElement
-    extends AutoDisposeNotifierProviderElement<HabitGraceDay, bool>
-    with HabitGraceDayRef {
-  _HabitGraceDayProviderElement(super.provider);
-
-  @override
-  String get habitId => (origin as HabitGraceDayProvider).habitId;
 }
 
 String _$habitSubtaskCheckinHash() =>
     r'c4eae9cbbe7f7b3e175921432ad28da552487bdc';
 
-abstract class _$HabitSubtaskCheckin
-    extends BuildlessAutoDisposeNotifier<Set<String>> {
-  late final String habitId;
-
-  Set<String> build(String habitId);
-}
-
-/// See also [HabitSubtaskCheckin].
-@ProviderFor(HabitSubtaskCheckin)
-const habitSubtaskCheckinProvider = HabitSubtaskCheckinFamily();
-
-/// See also [HabitSubtaskCheckin].
-class HabitSubtaskCheckinFamily extends Family<Set<String>> {
-  /// See also [HabitSubtaskCheckin].
-  const HabitSubtaskCheckinFamily();
-
-  /// See also [HabitSubtaskCheckin].
-  HabitSubtaskCheckinProvider call(String habitId) {
-    return HabitSubtaskCheckinProvider(habitId);
-  }
-
-  @override
-  HabitSubtaskCheckinProvider getProviderOverride(
-    covariant HabitSubtaskCheckinProvider provider,
-  ) {
-    return call(provider.habitId);
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'habitSubtaskCheckinProvider';
-}
-
-/// See also [HabitSubtaskCheckin].
-class HabitSubtaskCheckinProvider
-    extends AutoDisposeNotifierProviderImpl<HabitSubtaskCheckin, Set<String>> {
-  /// See also [HabitSubtaskCheckin].
-  HabitSubtaskCheckinProvider(String habitId)
-    : this._internal(
-        () => HabitSubtaskCheckin()..habitId = habitId,
-        from: habitSubtaskCheckinProvider,
+final class HabitSubtaskCheckinFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          HabitSubtaskCheckin,
+          Set<String>,
+          Set<String>,
+          Set<String>,
+          String
+        > {
+  HabitSubtaskCheckinFamily._()
+    : super(
+        retry: null,
         name: r'habitSubtaskCheckinProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$habitSubtaskCheckinHash,
-        dependencies: HabitSubtaskCheckinFamily._dependencies,
-        allTransitiveDependencies:
-            HabitSubtaskCheckinFamily._allTransitiveDependencies,
-        habitId: habitId,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
       );
 
-  HabitSubtaskCheckinProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.habitId,
-  }) : super.internal();
-
-  final String habitId;
+  HabitSubtaskCheckinProvider call(String habitId) =>
+      HabitSubtaskCheckinProvider._(argument: habitId, from: this);
 
   @override
-  Set<String> runNotifierBuild(covariant HabitSubtaskCheckin notifier) {
-    return notifier.build(habitId);
-  }
-
-  @override
-  Override overrideWith(HabitSubtaskCheckin Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: HabitSubtaskCheckinProvider._internal(
-        () => create()..habitId = habitId,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        habitId: habitId,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeNotifierProviderElement<HabitSubtaskCheckin, Set<String>>
-  createElement() {
-    return _HabitSubtaskCheckinProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is HabitSubtaskCheckinProvider && other.habitId == habitId;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, habitId.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
+  String toString() => r'habitSubtaskCheckinProvider';
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin HabitSubtaskCheckinRef on AutoDisposeNotifierProviderRef<Set<String>> {
-  /// The parameter `habitId` of this provider.
-  String get habitId;
-}
+abstract class _$HabitSubtaskCheckin extends $Notifier<Set<String>> {
+  late final _$args = ref.$arg as String;
+  String get habitId => _$args;
 
-class _HabitSubtaskCheckinProviderElement
-    extends AutoDisposeNotifierProviderElement<HabitSubtaskCheckin, Set<String>>
-    with HabitSubtaskCheckinRef {
-  _HabitSubtaskCheckinProviderElement(super.provider);
-
+  Set<String> build(String habitId);
+  @$mustCallSuper
   @override
-  String get habitId => (origin as HabitSubtaskCheckinProvider).habitId;
+  void runBuild() {
+    final ref = this.ref as $Ref<Set<String>, Set<String>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Set<String>, Set<String>>,
+              Set<String>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
+  }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

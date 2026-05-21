@@ -20,7 +20,7 @@ class HabitDetailScreen extends ConsumerWidget {
     final historyAsync = ref.watch(habitHistoryDataProvider(habit.id));
 
     final streak = streakAsync.maybeWhen(data: (s) => s, orElse: () => 0);
-    final history = historyAsync.valueOrNull;
+    final history = historyAsync.value;
 
     return Scaffold(
       backgroundColor: mc.bgCanvas,
@@ -641,7 +641,7 @@ class _ReminderTile extends ConsumerWidget {
     );
     if (picked != null && context.mounted) {
       final ok = await ref
-          .read(habitReminderNotifierProvider(habit.id).notifier)
+          .read(habitReminderProvider(habit.id).notifier)
           .set(habit, picked);
       if (!ok && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -651,14 +651,14 @@ class _ReminderTile extends ConsumerWidget {
         );
         return;
       }
-      ref.invalidate(habitReminderNotifierProvider(habit.id));
+      ref.invalidate(habitReminderProvider(habit.id));
     }
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final reminderAsync = ref.watch(habitReminderNotifierProvider(habit.id));
-    final reminder = reminderAsync.valueOrNull;
+    final reminderAsync = ref.watch(habitReminderProvider(habit.id));
+    final reminder = reminderAsync.value;
 
     return Container(
       decoration: BoxDecoration(
@@ -714,7 +714,7 @@ class _ReminderTile extends ConsumerWidget {
             const SizedBox(width: 12),
             GestureDetector(
               onTap: () => ref
-                  .read(habitReminderNotifierProvider(habit.id).notifier)
+                  .read(habitReminderProvider(habit.id).notifier)
                   .cancel(),
               child: Icon(Icons.close, size: 16, color: mc.inkTertiary),
             ),
@@ -836,7 +836,7 @@ class _StackChainBadge extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final habitsAsync = ref.watch(habitsProvider);
-    final stackHabit = habitsAsync.valueOrNull
+    final stackHabit = habitsAsync.value
         ?.where((h) => h.id == habit.stackAfterHabitId)
         .firstOrNull;
 

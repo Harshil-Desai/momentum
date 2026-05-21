@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'offline/offline_queue.dart';
@@ -29,7 +28,7 @@ Dio dio(Ref ref) {
     InterceptorsWrapper(
       onRequest: (options, handler) async {
         const storage = FlutterSecureStorage(
-          aOptions: AndroidOptions(encryptedSharedPreferences: true),
+          aOptions: AndroidOptions(),
         );
         final token = await storage.read(key: 'jwt_token');
         if (token != null) {
