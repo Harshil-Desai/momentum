@@ -20,6 +20,8 @@ func NewAchievementService(repo *repositories.AchievementRepository) *Achievemen
 		evaluators: []evaluators.Evaluator{
 			&evaluators.FirstSteps{},
 			&evaluators.WeekOne{},
+			&evaluators.TwoWeeksStrong{},
+			&evaluators.HabitForged{},
 			&evaluators.InTheFlow{},
 			&evaluators.PerfectWeek{},
 			&evaluators.TheComeback{},

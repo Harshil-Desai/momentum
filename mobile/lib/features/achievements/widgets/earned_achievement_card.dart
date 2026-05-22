@@ -9,37 +9,56 @@ class EarnedAchievementCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final locked = item.isLocked;
+
     return Card(
-      color: colorScheme.primaryContainer,
+      color: locked
+          ? colorScheme.surfaceContainerHighest
+          : colorScheme.primaryContainer,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 2,
+      elevation: locked ? 0 : 2,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(item.icon, style: const TextStyle(fontSize: 36)),
+            Opacity(
+              opacity: locked ? 0.35 : 1.0,
+              child: Text(item.icon, style: const TextStyle(fontSize: 36)),
+            ),
             const SizedBox(height: 8),
             Text(
               item.name,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: colorScheme.onPrimaryContainer,
+                color: locked
+                    ? colorScheme.onSurface.withValues(alpha: 0.45)
+                    : colorScheme.onPrimaryContainer,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            if (item.earnedAt != null) ...[
-              const SizedBox(height: 4),
+            const SizedBox(height: 4),
+            if (!locked && item.earnedAt != null)
               Text(
                 _formatDate(item.earnedAt!),
                 style: TextStyle(
                   fontSize: 11,
                   color: colorScheme.onPrimaryContainer.withValues(alpha: 0.7),
                 ),
+              )
+            else if (locked)
+              Text(
+                item.description,
+                style: TextStyle(
+                  fontSize: 10,
+                  color: colorScheme.onSurface.withValues(alpha: 0.35),
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
           ],
         ),
       ),

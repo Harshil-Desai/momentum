@@ -13,6 +13,8 @@ class AchievementItem {
     this.earnedAt,
   });
 
+  bool get isLocked => earnedAt == null;
+
   factory AchievementItem.fromJson(Map<String, dynamic> json) => AchievementItem(
         id: json['id'] as String,
         name: json['name'] as String,
@@ -54,21 +56,23 @@ class ProgressItem {
 }
 
 class AchievementsData {
-  final List<AchievementItem> earned;
+  final List<AchievementItem> all;
   final List<ProgressItem> inProgress;
   final List<String> newlyEarned;
 
   const AchievementsData({
-    required this.earned,
+    required this.all,
     required this.inProgress,
     required this.newlyEarned,
   });
+
+  List<AchievementItem> get earned => all.where((a) => !a.isLocked).toList();
 
   List<ProgressItem> get nudges =>
       inProgress.where((p) => p.isNearCompletion).toList();
 
   factory AchievementsData.fromJson(Map<String, dynamic> json) => AchievementsData(
-        earned: (json['earned'] as List)
+        all: (json['earned'] as List)
             .map((e) => AchievementItem.fromJson(e as Map<String, dynamic>))
             .toList(),
         inProgress: (json['in_progress'] as List)
