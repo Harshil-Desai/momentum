@@ -245,49 +245,47 @@ class _HabitCardState extends ConsumerState<HabitCard>
                                 decorationThickness: 1.5,
                               ),
                             ),
-                            const SizedBox(height: 5),
+                            const SizedBox(height: 6),
                             Row(
                               children: [
-                                // Streak pill
-                                if (streak > 0) ...[
-                                  ScaleTransition(
-                                    scale: _streakScale,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 3),
-                                      decoration: BoxDecoration(
-                                        color: accent.withAlpha(20),
-                                        borderRadius: BorderRadius.circular(99),
+                                // 7-day dots
+                                _LastSevenDots(
+                                  dates: ref.watch(habitHistoryDataProvider(habit.id))
+                                      .maybeWhen(data: (h) => h.dates, orElse: () => []),
+                                  accent: accent,
+                                  mc: mc,
+                                ),
+                                const SizedBox(width: 10),
+                                // Streak number (Fraunces)
+                                ScaleTransition(
+                                  scale: _streakScale,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                                    textBaseline: TextBaseline.alphabetic,
+                                    children: [
+                                      Text(
+                                        streak == 0 ? '—' : '$streak',
+                                        style: GoogleFonts.fraunces(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w400,
+                                          color: streak == 0 ? mc.inkTertiary : accent,
+                                          letterSpacing: -0.4,
+                                          height: 1,
+                                        ),
                                       ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            '🔥',
-                                            style: const TextStyle(fontSize: 11),
+                                      if (streak > 0) ...[
+                                        const SizedBox(width: 3),
+                                        Text(
+                                          streak == 1 ? 'day' : 'days',
+                                          style: GoogleFonts.inter(
+                                            fontSize: 11,
+                                            color: mc.inkTertiary,
+                                            letterSpacing: 0.3,
                                           ),
-                                          const SizedBox(width: 3),
-                                          Text(
-                                            '$streak',
-                                            style: GoogleFonts.inter(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600,
-                                              color: accent,
-                                              letterSpacing: -0.2,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                ],
-                                Text(
-                                  habit.frequency.label,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 12,
-                                    color: mc.inkTertiary,
-                                    letterSpacing: -0.05,
+                                        ),
+                                      ],
+                                    ],
                                   ),
                                 ),
                               ],
@@ -454,6 +452,54 @@ class _ArchiveSheet extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ── Last-7-days dot row ───────────────────────────────────────────────────────
+
+class _LastSevenDots extends StatelessWidget {
+  const _LastSevenDots({
+    required this.dates,
+    required this.accent,
+    required this.mc,
+  });
+
+  final List<String> dates;
+  final Color accent;
+  final CadenceColors mc;
+
+  @override
+  Widget build(BuildContext context) {
+    final set = dates.toSet();
+    final today = DateTime.now();
+    final todayStr =
+        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(7, (i) {
+        final offset = 6 - i;
+        final d = today.subtract(Duration(days: offset));
+        final iso =
+            '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+        final isToday = iso == todayStr;
+        final filled = set.contains(iso);
+        final size = isToday ? 7.0 : 5.0;
+        return Padding(
+          padding: EdgeInsets.only(right: i < 6 ? 5.0 : 0),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 220),
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: filled ? accent : Colors.transparent,
+              border: filled ? null : Border.all(color: mc.hairlineStrong, width: 1),
+            ),
+          ),
+        );
+      }),
     );
   }
 }

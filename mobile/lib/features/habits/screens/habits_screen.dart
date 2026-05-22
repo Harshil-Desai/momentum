@@ -482,54 +482,129 @@ class _HabitPage extends ConsumerWidget {
       child: ListView(
         padding: const EdgeInsets.only(bottom: 120),
         children: [
-          ...habits.map((h) => HabitCard(habit: h, selectedDate: selectedDate)),
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 40, 24, 0),
-            child: _ProgressLine(habits: habits, selectedDate: selectedDate),
+            padding: const EdgeInsets.fromLTRB(24, 4, 24, 16),
+            child: _TodayStrip(habits: habits, selectedDate: selectedDate, mc: mc),
           ),
+          ...habits.map((h) => HabitCard(habit: h, selectedDate: selectedDate)),
         ],
       ),
     );
   }
 }
 
-// ── Progress line ──────────────────────────────────────────────────────────────
-// Watches per-habit history to count only habits not yet checked in today.
+// ── Today strip (per-habit progress bar) ─────────────────────────────────────
 
-class _ProgressLine extends ConsumerWidget {
-  const _ProgressLine({required this.habits, required this.selectedDate});
+class _TodayStrip extends ConsumerWidget {
+  const _TodayStrip({
+    required this.habits,
+    required this.selectedDate,
+    required this.mc,
+  });
 
   final List habits;
   final DateTime selectedDate;
+  final CadenceColors mc;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mc = context.mc;
     final dateStr = selectedDateString(selectedDate);
 
-    int waiting = 0;
-    for (final h in habits) {
+    final checkedStates = habits.map((h) {
       final history = ref.watch(habitHistoryDataProvider(h.id)).value;
-      final checked = history != null && history.dates.contains(dateStr);
-      if (!checked) waiting++;
+      return history != null && history.dates.contains(dateStr);
+    }).toList();
+
+    final done = checkedStates.where((c) => c).length;
+    final all = habits.length;
+
+    if (all == 0) return const SizedBox.shrink();
+
+    String statusLabel;
+    if (done == 0) {
+      statusLabel = 'Unwritten';
+    } else if (done == all) {
+      statusLabel = 'All kept';
+    } else {
+      statusLabel = 'In progress';
     }
 
-    final today = DateTime.now();
-    final todayNorm = DateTime(today.year, today.month, today.day);
-    final isPast = selectedDate.isBefore(todayNorm);
-    final doneLabel = isPast ? 'All logged for that day. ✓' : 'All done for today. ✓';
-    final waitingLabel = isPast
-        ? '$waiting habit${waiting == 1 ? '' : 's'} not logged for that day.'
-        : 'Keep going — $waiting habit${waiting == 1 ? '' : 's'} waiting.';
-
-    return Text(
-      waiting == 0 ? doneLabel : waitingLabel,
-      textAlign: TextAlign.center,
-      style: GoogleFonts.fraunces(
-        fontSize: 13,
-        fontStyle: FontStyle.italic,
-        color: mc.inkTertiary,
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Per-habit bar segments
+        SizedBox(
+          height: 8,
+          child: Row(
+            children: List.generate(habits.length, (i) {
+              final accent = CadencePigments.fromHex(habits[i].color as String?);
+              final kept = checkedStates[i];
+              return Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(right: i < habits.length - 1 ? 5 : 0),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 280),
+                    curve: const Cubic(0.34, 1.4, 0.64, 1),
+                    height: kept ? 6 : 2,
+                    decoration: BoxDecoration(
+                      color: kept ? accent : mc.hairlineStrong,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+        const SizedBox(height: 10),
+        // Labels
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Text(
+              statusLabel,
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: mc.inkTertiary,
+                letterSpacing: 1.6,
+              ),
+            ),
+            Text.rich(
+              TextSpan(children: [
+                TextSpan(
+                  text: '$done',
+                  style: GoogleFonts.fraunces(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: mc.inkPrimary,
+                    letterSpacing: -0.1,
+                  ),
+                ),
+                TextSpan(
+                  text: ' of ',
+                  style: GoogleFonts.fraunces(
+                    fontSize: 13,
+                    fontStyle: FontStyle.italic,
+                    color: mc.inkSecondary,
+                    letterSpacing: -0.1,
+                  ),
+                ),
+                TextSpan(
+                  text: '$all',
+                  style: GoogleFonts.fraunces(
+                    fontSize: 13,
+                    color: mc.inkSecondary,
+                    letterSpacing: -0.1,
+                  ),
+                ),
+              ]),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
